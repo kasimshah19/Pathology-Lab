@@ -1,6 +1,3 @@
-<div align="center">
-  <img src="./assets/microscope_logo.png" alt="Pathology Lab Premium Logo" width="150" />
-</div>
 
 # Pathology Lab Management System
 

@@ -2,6 +2,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
 import { ToastProvider } from '@/components/Toast';
+import InstallPrompt from '@/components/InstallPrompt';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -41,6 +42,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <ToastProvider>
             {children}
+            <InstallPrompt />
           </ToastProvider>
         </AuthProvider>
       </body>

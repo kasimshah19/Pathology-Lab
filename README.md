@@ -1,9 +1,11 @@
+<div align="center">
 
 # Pathology Lab Management System
 
 A comprehensive, full-stack, and PWA-enabled pathology laboratory management platform designed to digitize patient records, streamline test bookings, track sample lifecycles, and generate professional diagnostic reports.
 
-<div align="center">
+<br />
+
 
 ![Build](https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge)
 ![Version](https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge)

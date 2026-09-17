@@ -164,4 +164,66 @@ The PDF generation is one of the most complex parts of the system.
 7. Puppeteer prints the page to a PDF buffer using `page.pdf({ format: 'A4', printBackground: true })`.
 8. The Express response sends this buffer with headers `Content-Disposition: attachment; filename="report.pdf"` and `Content-Type: application/pdf`.
 
-## End of Documentation
+---
+
+## 7. Deep Dive: Booking Lifecycle & Logic
+
+The `bookingController.js` governs the core operational workflow of the system.
+
+### 7.1 Booking Creation & Validation
+When `POST /api/bookings` is hit:
+1. **Patient Validation:** Verifies the `Patient` `ObjectId` exists.
+2. **Test Validation:** Loops through the provided `testIds`. Validates that they correspond to active `Test` documents.
+3. **Total Calculation:** Dynamically calculates the `totalAmount` by summing the `price` of all selected tests.
+4. **Initialization:** Sets initial statuses: `status = 'pending'`, `paymentStatus = 'unpaid'`.
+
+### 7.2 Global Search Mechanics
+The `GET /api/bookings` endpoint supports a powerful `search` parameter.
+- It performs an exact Regex search on the `bookingId`.
+- Simultaneously, it performs a Regex search on the `Patient` model's `name` field. It extracts the matched `Patient` IDs and uses the `$in` operator to fetch bookings belonging to those patients.
+- This allows a receptionist to type either "BK-0001" or "John Doe" into the same search bar to find the booking.
+
+### 7.3 Status Guardrails
+The `updateBookingStatus` explicitly restricts status changes to a hardcoded array:
+`['pending', 'sample_collected', 'result_entered', 'report_ready', 'delivered']`.
+- If the status is moved to `sample_collected`, a `sampleCollectedAt` timestamp is automatically stamped.
+
+### 7.4 Cascading Deletes
+When a Booking is deleted via `DELETE /api/bookings/:id`, the system utilizes a cascading delete pattern. It first runs `Report.deleteMany({ booking: booking._id })` to ensure no orphaned diagnostic reports remain in the database before deleting the booking itself.
+
+---
+
+## 8. Deep Dive: Dynamic Diagnostics Logic
+
+The `reportController.js` is responsible for translating raw test results into actionable diagnostic data.
+
+### 8.1 Automated Abnormality Detection (Regex Parsers)
+When a technician enters a result via `addOrUpdateReportResults`:
+1. The backend fetches the corresponding `Test` document.
+2. It checks if a `normalRange` string exists (e.g., `"4.5-11.0"` or `"4.5 - 11.0"`).
+3. The system executes a Regex parser: `/^([\d.]+)\s*-\s*([\d.]+)$/` to extract the `min` and `max` values dynamically.
+4. The entered `resultValue` is cast to a `parseFloat()`.
+5. If the entered value is `< min` or `> max`, the system automatically sets a boolean flag: `isAbnormal = true`.
+6. This flag is later used by the PDF generator to render the result in **red text/bold** to alert doctors.
+
+### 8.2 Report Readiness Validation
+When `markReportAsReady` is invoked:
+1. The system extracts the array of `testIds` originally booked.
+2. It queries all `Report` documents tied to the booking.
+3. It performs a set difference operation: If `BookedTests - EnteredTests > 0`, the API refuses to mark the report as ready. It returns a `400 Bad Request` containing an array of `missingTests` names, ensuring incomplete reports can never be delivered to patients.
+
+---
+
+## 9. Frontend: Aggressive PWA Interception
+
+The `InstallPrompt.js` component overrides the browser's default PWA installation behavior to maximize user adoption.
+
+### 9.1 Mechanism
+1. A global `useEffect` listener intercepts the native `beforeinstallprompt` browser event.
+2. It prevents the default browser "mini-infobar" from rendering via `e.preventDefault()`.
+3. It stashes the event object into React state (`deferredPrompt`).
+4. It triggers a custom, highly styled Tailwind UI modal overlay (`z-[100]`).
+5. Upon clicking "Install Now", the app manually invokes `deferredPrompt.prompt()`.
+6. **Aggressive Fallback:** If the user clicks "Not Now", the modal is hidden. However, because this choice is *not* saved to `localStorage`, the prompt will aggressively reappear on the next hard page reload, ensuring staff are heavily encouraged to install the application for optimal performance.
+
+## End of Comprehensive Documentation

@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./assets/logo.svg" alt="Pathology Lab Premium Logo" width="150" />
+  <img src="./assets/microscope_logo.png" alt="Pathology Lab Premium Logo" width="150" />
 </div>
 
 # Pathology Lab Management System

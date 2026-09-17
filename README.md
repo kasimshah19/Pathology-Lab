@@ -592,3 +592,9 @@ No open-source license is currently specified in the repository. All rights rese
 - **Portfolio:** [kasim-portfolio-umber.vercel.app](https://kasim-portfolio-umber.vercel.app/)
 - **LinkedIn:** [Kasim Shah](https://www.linkedin.com/in/kasim-shah-176175340/)
 - **GitHub:** [@kasimshah19](https://github.com/kasimshah19)
+
+<br />
+
+<div align="center">
+  <strong>&copy; 2026 Al-Hayat Diagnostic Lab — All rights reserved</strong>
+</div>

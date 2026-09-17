@@ -1,223 +1,70 @@
 # Comprehensive Manual QA & UAT Testing Suite
 ## Pathology Lab Management System
 
-This document provides exhaustive, enterprise-grade manual testing scenarios. It includes pre-conditions, required test data, execution steps, expected outcomes, and edge-case validations for Quality Assurance (QA) engineers.
+This document provides exhaustive, enterprise-grade manual testing scenarios formatted as tables for easy tracking during Quality Assurance (QA) and User Acceptance Testing (UAT).
 
 ---
 
 ## 1. Authentication & Security (AUTH)
 
-### Test Case: AUTH-01 | Valid Admin Login
-- **Description:** Verify that an Admin user can log in and access all administrative features.
-- **Pre-conditions:** A user with role `admin` exists in the database.
-- **Test Data:** `email: admin@lab.com`, `password: admin123`
-- **Execution Steps:**
-  1. Navigate to `/login`.
-  2. Enter valid Admin email and password.
-  3. Click "Sign In".
-- **Expected Result:**
-  - System verifies credentials via `bcryptjs`.
-  - JWT is generated and stored in `localStorage`.
-  - User is redirected to `/dashboard`.
-  - **Sidebar Check:** The "Settings" and "Users" menus MUST be visible.
-- **Status:** [ ]
-
-### Test Case: AUTH-02 | Invalid Credentials Lockout & Toast
-- **Description:** Verify the system's response to incorrect passwords or non-existent emails.
-- **Pre-conditions:** None.
-- **Test Data:** `email: wrong@lab.com`, `password: invalidPass`
-- **Execution Steps:**
-  1. Navigate to `/login`.
-  2. Enter invalid credentials.
-  3. Click "Sign In".
-- **Expected Result:**
-  - HTTP 401 Unauthorized response from backend.
-  - User remains on `/login`.
-  - A red error toast appears at the top right: "Invalid email or password".
-- **Status:** [ ]
-
-### Test Case: AUTH-03 | Route Protection & JWT Expiry
-- **Description:** Ensure unauthenticated users cannot bypass the login screen by typing URLs.
-- **Execution Steps:**
-  1. Clear `localStorage` in browser dev tools.
-  2. Attempt to manually navigate to `/dashboard/patients`.
-- **Expected Result:**
-  - The `ProtectedRoute.js` wrapper intercepts the request.
-  - Automatically redirects the browser back to `/login`.
-- **Status:** [ ]
+| Test ID | Module | Scenario / Description | Pre-conditions | Test Data | Execution Steps | Expected Result | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **AUTH-01** | Auth | Valid Admin Login | A user with role `admin` exists in the database. | `email`: admin@lab.com<br>`password`: admin123 | 1. Navigate to `/login`.<br>2. Enter credentials.<br>3. Click "Sign In". | • System verifies credentials via `bcryptjs`.<br>• JWT is generated and stored in `localStorage`.<br>• Redirects to `/dashboard`.<br>• **Sidebar Check:** "Settings" and "Users" menus MUST be visible. | [ ] |
+| **AUTH-02** | Auth | Invalid Credentials Lockout & Toast | None | `email`: wrong@lab.com<br>`password`: invalidPass | 1. Navigate to `/login`.<br>2. Enter invalid credentials.<br>3. Click "Sign In". | • HTTP 401 Unauthorized from backend.<br>• User remains on `/login`.<br>• Red error toast appears: "Invalid email or password". | [ ] |
+| **AUTH-03** | Auth | Route Protection & JWT Expiry | None | None | 1. Clear `localStorage` in dev tools.<br>2. Manually navigate to `/dashboard/patients`. | • `ProtectedRoute.js` intercepts the request.<br>• Automatically redirects browser to `/login`. | [ ] |
 
 ---
 
 ## 2. Patient Management (PAT)
 
-### Test Case: PAT-01 | Register Patient - Field Validations
-- **Description:** Verify form validation rules prevent incomplete records.
-- **Execution Steps:**
-  1. Login as Receptionist.
-  2. Navigate to "Patients" -> Click "New Patient".
-  3. Leave "Name" blank but fill "Age" and "Phone".
-  4. Click Submit.
-- **Expected Result:**
-  - HTML5 / Frontend validation blocks submission.
-  - If bypassed via Postman, backend returns HTTP 400 with a strict validation error.
-- **Status:** [ ]
-
-### Test Case: PAT-02 | Auto-generation of Patient ID
-- **Description:** Verify that the backend accurately generates sequential IDs (e.g., PAT-0010).
-- **Pre-conditions:** Database has 9 existing patients.
-- **Execution Steps:**
-  1. Fill all required fields for a New Patient.
-  2. Submit the form.
-- **Expected Result:**
-  - Success toast appears.
-  - The new patient appears at the top of the table.
-  - The `patientId` field is exactly `PAT-0010` (no duplicates).
-- **Status:** [ ]
-
-### Test Case: PAT-03 | Global Regex Search
-- **Description:** Verify search handles partial matches and case insensitivity.
-- **Test Data:** Patient name is "Johnathan Doe".
-- **Execution Steps:**
-  1. Type "john" in the patient search bar.
-- **Expected Result:**
-  - Table instantly filters to show "Johnathan Doe".
-- **Status:** [ ]
+| Test ID | Module | Scenario / Description | Pre-conditions | Test Data | Execution Steps | Expected Result | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **PAT-01** | Patient | Register Patient - Field Validations | None | Blank "Name", filled "Age" & "Phone" | 1. Login as Receptionist.<br>2. Navigate to "Patients" -> "New Patient".<br>3. Leave "Name" blank.<br>4. Click Submit. | • HTML5 / Frontend validation blocks submission.<br>• Backend returns HTTP 400 if bypassed. | [ ] |
+| **PAT-02** | Patient | Auto-generation of Patient ID | Database has 9 existing patients. | Valid Patient Details | 1. Fill all required fields for a New Patient.<br>2. Submit form. | • Success toast appears.<br>• Patient appears at top of table.<br>• `patientId` is exactly `PAT-0010`. | [ ] |
+| **PAT-03** | Patient | Global Regex Search | Patient named "Johnathan Doe" exists. | Search query: `john` | 1. Type "john" in patient search bar. | • Table instantly filters to show "Johnathan Doe" (case insensitive). | [ ] |
 
 ---
 
 ## 3. Test Catalog Management (TST)
 
-### Test Case: TST-01 | Create Test with Normal Range
-- **Description:** Add a new diagnostic test and verify the range format.
-- **Pre-conditions:** Logged in as Admin.
-- **Test Data:** Name: `Hemoglobin`, Category: `Hematology`, Price: `500`, Range: `13.5-17.5`, Unit: `g/dL`.
-- **Execution Steps:**
-  1. Navigate to "Tests" -> "Add New Test".
-  2. Input Test Data.
-  3. Click Save.
-- **Expected Result:**
-  - Test is saved.
-  - Verifiable in DB that `normalRange` is stored exactly as string `"13.5-17.5"`.
-- **Status:** [ ]
-
-### Test Case: TST-02 | Toggle Test Active Status
-- **Description:** Verify that deactivating a test hides it from future bookings without deleting historical data.
-- **Execution Steps:**
-  1. Edit "Hemoglobin" test.
-  2. Uncheck "Active" and Save.
-  3. Navigate to "New Booking" -> Select "Tests" dropdown.
-- **Expected Result:**
-  - "Hemoglobin" does NOT appear in the New Booking dropdown.
-  - Existing past bookings containing "Hemoglobin" remain unaffected.
-- **Status:** [ ]
+| Test ID | Module | Scenario / Description | Pre-conditions | Test Data | Execution Steps | Expected Result | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **TST-01** | Catalog | Create Test with Normal Range | Logged in as Admin. | `Name`: Hemoglobin<br>`Price`: 500<br>`Range`: 13.5-17.5 | 1. Navigate to "Tests" -> "Add New Test".<br>2. Input Test Data.<br>3. Click Save. | • Test is saved.<br>• DB stores `normalRange` exactly as string `"13.5-17.5"`. | [ ] |
+| **TST-02** | Catalog | Toggle Test Active Status | "Hemoglobin" test exists. | Status: `Inactive` | 1. Edit "Hemoglobin" test.<br>2. Uncheck "Active" and Save.<br>3. Go to "New Booking" -> Select "Tests". | • "Hemoglobin" does NOT appear in New Booking dropdown.<br>• Past bookings remain unaffected. | [ ] |
 
 ---
 
 ## 4. Booking Lifecycle & Logic (BKG)
 
-### Test Case: BKG-01 | Dynamic Total Amount Calculation
-- **Description:** Verify that the frontend correctly sums the price of selected tests.
-- **Test Data:** Test A ($100), Test B ($250).
-- **Execution Steps:**
-  1. Open "New Booking" modal.
-  2. Select Patient.
-  3. Select Test A and Test B.
-- **Expected Result:**
-  - The UI dynamically updates "Total Amount" to `$350`.
-  - Upon submission, the backend also recalculates and verifies the `$350` to prevent frontend tampering.
-- **Status:** [ ]
-
-### Test Case: BKG-02 | Cascading Deletion
-- **Description:** Ensure deleting a booking deletes associated reports to prevent database bloating.
-- **Pre-conditions:** A booking (BK-100) exists with 2 saved Report documents.
-- **Execution Steps:**
-  1. Click "Delete" on booking BK-100.
-  2. Confirm in dialog.
-- **Expected Result:**
-  - Booking is removed from UI.
-  - **Database Check:** Querying `reports` collection for `bookingId == BK-100` returns 0 documents.
-- **Status:** [ ]
+| Test ID | Module | Scenario / Description | Pre-conditions | Test Data | Execution Steps | Expected Result | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **BKG-01** | Booking | Dynamic Total Amount Calculation | Tests A ($100) and B ($250) exist. | Test A, Test B | 1. Open "New Booking".<br>2. Select Patient.<br>3. Select Test A and Test B. | • UI updates "Total Amount" to `$350`.<br>• Backend recalculates and verifies `$350` upon submission. | [ ] |
+| **BKG-02** | Booking | Cascading Deletion | Booking (BK-100) has 2 saved Reports. | `bookingId`: BK-100 | 1. Click "Delete" on booking BK-100.<br>2. Confirm in dialog. | • Booking removed from UI.<br>• **DB Check:** Querying `reports` for `BK-100` returns 0 docs. | [ ] |
 
 ---
 
 ## 5. Result Entry & Abnormality Parser (RPT)
 
-### Test Case: RPT-01 | Normal Result Entry
-- **Description:** Verify the backend correctly parses a normal result.
-- **Pre-conditions:** Booking contains Test with range `10-20`.
-- **Execution Steps:**
-  1. Click "Enter Results".
-  2. Input value `15`.
-  3. Submit.
-- **Expected Result:**
-  - Backend regex `/^([\d.]+)\s*-\s*([\d.]+)$/` parses min: 10, max: 20.
-  - 15 is within range. `isAbnormal` is saved as `false`.
-- **Status:** [ ]
-
-### Test Case: RPT-02 | Abnormal Result Entry
-- **Description:** Verify the backend correctly parses an abnormal result.
-- **Execution Steps:**
-  1. Click "Enter Results".
-  2. Input value `25`.
-  3. Submit.
-- **Expected Result:**
-  - 25 > 20. `isAbnormal` is saved as `true`.
-- **Status:** [ ]
-
-### Test Case: RPT-03 | Report Readiness Guardrail (400 Bad Request)
-- **Description:** Prevent marking a report as ready if tests are missing.
-- **Pre-conditions:** Booking has 3 tests. Only 2 have results entered.
-- **Execution Steps:**
-  1. Click "Mark Report Ready".
-- **Expected Result:**
-  - HTTP 400 Bad Request.
-  - UI Toast: "All test results must be entered."
-  - Backend response contains the array of missing test names.
-- **Status:** [ ]
+| Test ID | Module | Scenario / Description | Pre-conditions | Test Data | Execution Steps | Expected Result | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **RPT-01** | Reports | Normal Result Entry | Booking contains Test with range `10-20`. | Value: `15` | 1. Click "Enter Results".<br>2. Input `15`.<br>3. Submit. | • Backend regex parses min: 10, max: 20.<br>• 15 is within range. `isAbnormal` saved as `false`. | [ ] |
+| **RPT-02** | Reports | Abnormal Result Entry | Booking contains Test with range `10-20`. | Value: `25` | 1. Click "Enter Results".<br>2. Input `25`.<br>3. Submit. | • 25 > 20. `isAbnormal` saved as `true`. | [ ] |
+| **RPT-03** | Reports | Report Readiness Guardrail (400) | Booking has 3 tests. Only 2 have results. | N/A | 1. Click "Mark Report Ready". | • HTTP 400 Bad Request.<br>• UI Toast: "All test results must be entered."<br>• Backend responds with missing test names. | [ ] |
 
 ---
 
 ## 6. PDF Engine (Puppeteer) (PDF)
 
-### Test Case: PDF-01 | Dynamic Abnormality Styling
-- **Description:** Verify Puppeteer renders the `isAbnormal` flag correctly in HTML/CSS.
-- **Pre-conditions:** A booking is `report_ready` and contains at least 1 abnormal result.
-- **Execution Steps:**
-  1. Click "Download Report".
-  2. Open the downloaded PDF.
-- **Expected Result:**
-  - The abnormal result value is styled explicitly in **Bold** and **Red Color** to immediately alert the physician.
-  - Normal results are styled in standard black text.
-- **Status:** [ ]
-
-### Test Case: PDF-02 | Post-Download Lifecycle Update
-- **Description:** Verify that generating a PDF transitions the booking state.
-- **Execution Steps:**
-  1. Booking is currently `report_ready`.
-  2. Click "Download Report".
-  3. Refresh the Bookings table.
-- **Expected Result:**
-  - The booking status is now automatically updated to `delivered`.
-- **Status:** [ ]
+| Test ID | Module | Scenario / Description | Pre-conditions | Test Data | Execution Steps | Expected Result | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **PDF-01** | Engine | Dynamic Abnormality Styling | Booking is `report_ready` with 1 abnormal result. | N/A | 1. Click "Download Report".<br>2. Open downloaded PDF. | • Abnormal value styled in **Bold** and **Red**.<br>• Normal results in standard black text. | [ ] |
+| **PDF-02** | Engine | Post-Download Lifecycle Update | Booking is `report_ready`. | N/A | 1. Click "Download Report".<br>2. Refresh Bookings table. | • Booking status automatically updates to `delivered`. | [ ] |
 
 ---
 
 ## 7. Progressive Web App (PWA) Aggression
 
-### Test Case: PWA-01 | Event Interception
-- **Description:** Verify the native browser prompt is suppressed.
-- **Execution Steps:**
-  1. Open the web app on Chrome (Android or Desktop).
-- **Expected Result:**
-  - The default browser "Mini-infobar" does NOT appear.
-  - Instead, the custom Tailwind styled Modal (`InstallPrompt.js`) triggers with "Install Now" and "Not Now" buttons.
-- **Status:** [ ]
-
-### Test Case: PWA-02 | Aggressive Fallback Loop
-- **Description:** Ensure the prompt aggressively returns if dismissed, prioritizing app installation.
-- **Execution Steps:**
-  1. Click "Not Now" on the custom prompt.
-  2. Hard refresh the page (`F5` or pull-to-refresh).
-- **Expected Result:**
-  - Because state is intentionally NOT persisted in `localStorage`, the prompt aggressively reappears to encourage installation.
-- **Status:** [ ]
+| Test ID | Module | Scenario / Description | Pre-conditions | Test Data | Execution Steps | Expected Result | Status |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **PWA-01** | PWA | Event Interception | None | N/A | 1. Open web app on Chrome (Android/Desktop). | • Default browser infobar is suppressed.<br>• Custom Tailwind Modal triggers. | [ ] |
+| **PWA-02** | PWA | Aggressive Fallback Loop | None | N/A | 1. Click "Not Now" on custom prompt.<br>2. Hard refresh page (F5). | • Prompt aggressively reappears (state is not persisted in `localStorage`). | [ ] |

@@ -563,4 +563,8 @@ No open-source license is currently specified in the repository. All rights rese
 ---
 
 **Author:** Kasim Shah  
-**Contact:** (To be updated)
+
+### Connect with me:
+- **Portfolio:** [kasim-portfolio-umber.vercel.app](https://kasim-portfolio-umber.vercel.app/)
+- **LinkedIn:** [Kasim Shah](https://www.linkedin.com/in/kasim-shah-176175340/)
+- **GitHub:** [@kasimshah19](https://github.com/kasimshah19)

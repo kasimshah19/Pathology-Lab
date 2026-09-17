@@ -126,7 +126,7 @@ export default function LoginPage() {
 
         {/* Footer */}
         <p className="text-center text-xs text-slate-300 mt-6">
-          © 2026 XYZ Diagnostic Lab — All rights reserved
+          &copy; {new Date().getFullYear()} Al-Hayat Diagnostic Lab &mdash; All rights reserved
         </p>
       </div>
     </div>

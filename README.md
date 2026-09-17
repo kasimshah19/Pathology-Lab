@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="./assets/logo.svg" alt="Pathology Lab Premium Logo" width="150" />
+</div>
+
 # Pathology Lab Management System
 
 A comprehensive, full-stack, and PWA-enabled pathology laboratory management platform designed to digitize patient records, streamline test bookings, track sample lifecycles, and generate professional diagnostic reports.

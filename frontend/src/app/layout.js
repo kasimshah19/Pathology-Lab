@@ -42,7 +42,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <ToastProvider>
             {children}
-            <InstallPrompt />
+            {/* <InstallPrompt /> */}
           </ToastProvider>
         </AuthProvider>
       </body>

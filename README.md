@@ -354,15 +354,19 @@ MongoDB was chosen for its flexibility with document structures, allowing tests 
 
 ---
 
-## Authentication & Authorization
+## Authentication & Role-Based Access Control (RBAC)
 
 - **Mechanism:** JWT (JSON Web Tokens).
-- **Process:** User submits email/password -> Backend hashes password using `bcryptjs` and compares -> If valid, generates a JWT signed with `JWT_SECRET`.
-- **Frontend Storage:** The token is stored in `localStorage`.
+- **Role-Based Access Control (RBAC):** The system enforces strict access boundaries based on user roles:
+  - **Admin:** Has unrestricted access to all modules, including Staff Management, Lab Settings, and the entire Test Catalog.
+  - **Receptionist:** Can register patients, create bookings, and collect payments, but cannot modify lab settings or edit test catalog prices.
+  - **Technician:** Authorized to process collected samples, enter diagnostic results, and mark reports as ready, but lacks administrative privileges.
+- **Process:** User submits email/password -> Backend hashes password using `bcryptjs` and compares -> If valid, generates a JWT signed with `JWT_SECRET` encoding the user's role.
+- **Frontend Storage:** The token is stored securely in `localStorage`.
 - **Axios Interceptor:** Every outgoing API request from the frontend automatically attaches `Authorization: Bearer <token>` in the headers.
-- **Route Protection:** 
-  - Frontend: `ProtectedRoute` wrapper component redirects unauthenticated users to `/login`.
-  - Backend: `protect` middleware validates the token. `authorize(...roles)` middleware restricts endpoints (e.g., only `admin` can edit settings).
+- **Route Protection & Enforcement:** 
+  - **Frontend:** `ProtectedRoute` wrapper component intercepts rendering. It blocks unauthenticated users (redirecting to `/login`) and restricts UI elements based on the active role (e.g., hiding the Settings tab from Receptionists).
+  - **Backend:** `protect` middleware validates token integrity. `authorize(...roles)` middleware restricts API endpoints at the network level (e.g., rejecting non-admin requests to `POST /api/tests`).
 
 ---
 

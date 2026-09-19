@@ -102,6 +102,7 @@ This project digitalizes the entire pathology workflow. It solves the aforementi
 |-----------|-----------------|-------------|-------------|:------:|
 | **Frontend UI** | Vercel | Next.js App Router (Dashboard, Modals, PWA) | [Live Frontend](https://pathology-lab-xl.vercel.app) | 🟢 Live |
 | **Backend API** | Render | Node.js / Express.js REST API & PDF Engine | [Live API Base](https://pathology-lab-r16i.onrender.com) | 🟢 Live |
+| **Database** | MongoDB Atlas | Cloud NoSQL Document Database | N/A (Internal) | 🟢 Live |
 
 ---
 

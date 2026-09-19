@@ -15,6 +15,7 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
   });
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
@@ -135,14 +136,23 @@ export default function ChangePasswordModal({ isOpen, onClose }) {
 
           <div className="space-y-1">
             <label className="text-sm font-medium text-slate-700">Confirm New Password <span className="text-red-400">*</span></label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              className={`w-full px-3.5 py-2.5 bg-slate-50/80 border rounded-xl text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400 transition-all duration-200 ${fieldErrors.confirmPassword ? 'border-red-300 focus:ring-red-200 focus:border-red-400' : 'border-slate-200'}`}
-            />
+            <div className="relative">
+              <input
+                type={showConfirm ? 'text' : 'password'}
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                className={`w-full pl-3.5 pr-10 py-2.5 bg-slate-50/80 border rounded-xl text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400 transition-all duration-200 ${fieldErrors.confirmPassword ? 'border-red-300 focus:ring-red-200 focus:border-red-400' : 'border-slate-200'}`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirm(!showConfirm)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                {showConfirm ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
             {fieldErrors.confirmPassword && <p className="text-xs text-red-500 mt-1">{fieldErrors.confirmPassword}</p>}
           </div>
 

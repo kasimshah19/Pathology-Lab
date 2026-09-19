@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Loader2, AlertCircle } from 'lucide-react';
+import { X, Loader2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import api from '@/lib/api';
 
 const initialForm = {
@@ -17,12 +17,14 @@ export default function StaffFormModal({ open, onClose, onSuccess }) {
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (open) {
       setForm(initialForm);
       setErrors({});
       setApiError('');
+      setShowPassword(false);
     }
   }, [open]);
 
@@ -123,7 +125,12 @@ export default function StaffFormModal({ open, onClose, onSuccess }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-slate-600 mb-1.5">Temporary Password <span className="text-red-400">*</span></label>
-              <input type="password" value={form.password} onChange={(e) => handleChange('password', e.target.value)} placeholder="Minimum 6 chars" className={fieldClass('password')} />
+              <div className="relative">
+                <input type={showPassword ? 'text' : 'password'} value={form.password} onChange={(e) => handleChange('password', e.target.value)} placeholder="Minimum 6 chars" className={`${fieldClass('password')} pr-10`} />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
               {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password}</p>}
             </div>
           </div>

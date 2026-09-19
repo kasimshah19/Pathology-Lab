@@ -241,7 +241,8 @@ Blood Lab/
 ### Patient Management
 - Register new patients with demographics.
 - Auto-generation of unique Patient IDs (`PAT-XXXX`).
-- View patient history and past bookings.
+- Comprehensive Patient Detail Page displaying full profile and edit capabilities.
+- View complete patient booking history with summary stats (total visits, amount spent) and clickable row navigation.
 
 ### Test Catalog
 - Add, edit, and categorize diagnostic tests.

@@ -232,11 +232,20 @@ Blood Lab/
 
 ### User & Role Management
 - Secure Login with JWT.
-- Role-based views & permissions (RBAC): Admin, Receptionist, Technician.
-  - **Admin**: Full access, including Settings (Staff management) and Test Catalog editing.
-  - **Receptionist & Technician**: Access to specific domains without administrative rights.
 - Self-service "Change Password" functionality available to all roles.
 - Admin capabilities to add, edit (Name, Email, Phone), and activate/deactivate staff accounts.
+- **Role-based views & permissions (RBAC)**: There are 3 types of logins in the system. All roles enter through a common login page (`/login`). Upon login, the backend JWT token identifies their role and dynamically renders the appropriate dashboard and menus:
+  1. **Admin Login**:
+     - Has full access to the system.
+     - Can add new staff members (receptionists/technicians), manage the test catalog (add/edit/delete tests), and update basic lab settings (name, address, logo).
+  2. **Receptionist Login**:
+     - Primarily handles the front desk operations.
+     - Can register new patients, book tests, and update booking payment/status (e.g., 'sample_collected').
+     - Does NOT have access to modify lab settings or staff details.
+  3. **Technician Login**:
+     - Focuses solely on laboratory technical work.
+     - Responsible for entering patient test results into the system, checking normal/abnormal values, and marking reports as "ready".
+     - Does NOT have access to create bookings or change lab settings.
 
 ### Patient Management
 - Register new patients with demographics.

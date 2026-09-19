@@ -25,6 +25,8 @@ This document provides exhaustive, enterprise-grade manual testing scenarios for
 | **PAT-01** | Patient | Register Patient - Field Validations | None | Blank "Name", filled "Age" & "Phone" | 1. Login as Receptionist.<br>2. Navigate to "Patients" -> "New Patient".<br>3. Leave "Name" blank.<br>4. Click Submit. | • HTML5 / Frontend validation blocks submission.<br>• Backend returns HTTP 400 if bypassed. | [ ] |
 | **PAT-02** | Patient | Auto-generation of Patient ID | Database has 9 existing patients. | Valid Patient Details | 1. Fill all required fields for a New Patient.<br>2. Submit form. | • Success toast appears.<br>• Patient appears at top of table.<br>• `patientId` is exactly `PAT-0010`. | [ ] |
 | **PAT-03** | Patient | Global Regex Search | Patient named "Johnathan Doe" exists. | Search query: `john` | 1. Type "john" in patient search bar. | • Table instantly filters to show "Johnathan Doe" (case insensitive). | [ ] |
+| **PAT-04** | Patient | View Patient Detail & Stats | Patient has past bookings. | None | 1. Navigate to `/dashboard/patients`.<br>2. Click on Patient name. | • Navigates to `/dashboard/patients/[id]`.<br>• Profile card displays correct demographics.<br>• Summary stats (Total Visits, Total Amount) calculate correctly based on history. | [ ] |
+| **PAT-05** | Patient | Patient Booking History & Clickable Rows | Patient has past bookings. | None | 1. On Patient Detail Page, view Booking History table.<br>2. Click on a booking row. | • Table shows only bookings for this specific patient.<br>• Row click navigates to `/dashboard/bookings/[bookingId]` successfully. | [ ] |
 
 ---
 

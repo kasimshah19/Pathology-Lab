@@ -113,10 +113,9 @@ function Sidebar({ open, onClose, user }) {
   );
 }
 
-function TopNavbar({ onMenuClick, user, logout }) {
+function TopNavbar({ onMenuClick, user, logout, onOpenPasswordModal }) {
   const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
 
   // Derive page title from pathname
   const getPageTitle = () => {
@@ -168,7 +167,7 @@ function TopNavbar({ onMenuClick, user, logout }) {
               <button
                 onClick={() => {
                   setDropdownOpen(false);
-                  setPasswordModalOpen(true);
+                  onOpenPasswordModal();
                 }}
                 className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
               >
@@ -189,11 +188,6 @@ function TopNavbar({ onMenuClick, user, logout }) {
           </>
         )}
       </div>
-
-      <ChangePasswordModal 
-        isOpen={passwordModalOpen} 
-        onClose={() => setPasswordModalOpen(false)} 
-      />
     </header>
   );
 }
@@ -201,6 +195,7 @@ function TopNavbar({ onMenuClick, user, logout }) {
 export default function DashboardLayout({ children }) {
   const { user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
 
   // Close sidebar on route change (mobile)
   const pathname = usePathname();
@@ -213,13 +208,18 @@ export default function DashboardLayout({ children }) {
       <div className="min-h-screen bg-slate-50/50 flex">
         <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} user={user} />
         <div className="flex-1 flex flex-col min-w-0">
-          <TopNavbar onMenuClick={() => setSidebarOpen(true)} user={user} logout={logout} />
+          <TopNavbar onMenuClick={() => setSidebarOpen(true)} user={user} logout={logout} onOpenPasswordModal={() => setPasswordModalOpen(true)} />
           <main className="flex-1 p-4 pb-24 sm:p-6 lg:pb-6">
             {children}
           </main>
         </div>
         <BottomNav onOpenMenu={() => setSidebarOpen(true)} />
       </div>
+
+      <ChangePasswordModal 
+        isOpen={passwordModalOpen} 
+        onClose={() => setPasswordModalOpen(false)} 
+      />
     </ProtectedRoute>
   );
 }

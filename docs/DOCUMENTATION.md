@@ -36,12 +36,13 @@ The system follows a strict Client-Server decoupled architecture.
 ## 2. Database Schema (Mongoose)
 
 ### 2.1 User (`User.js`)
-Handles staff authentication and Role-Based Access Control.
+Handles staff authentication and Role-Based Access Control (RBAC). Admin has full privileges (manage staff, tests). Receptionists and Technicians have limited operational privileges. All roles can self-manage passwords.
 - `name` (String, required)
 - `email` (String, required, unique)
 - `password` (String, required, hashed)
 - `role` (String, enum: `['admin', 'receptionist', 'technician']`)
 - `isActive` (Boolean, default: true)
+- `phone` (String, optional)
 
 ### 2.2 Patient (`Patient.js`)
 Stores patient demographics.
@@ -93,6 +94,9 @@ All requests must include the header `Authorization: Bearer <token>` unless stat
 ### 3.1 Auth API (`/api/auth`)
 - **`POST /login`**: Accepts `{ email, password }`. Returns `{ token, user }`. (Public)
 - **`GET /me`**: Returns the profile of the current authenticated user.
+- **`PATCH /change-password`**: Updates the logged-in user's password. Requires `{ currentPassword, newPassword }`.
+- **`POST /register`**: Registers a new staff member. Requires `admin` role.
+- **`PUT /users/:id`**: Updates basic staff details (`name`, `email`, `phone`). Requires `admin` role.
 
 ### 3.2 Patient API (`/api/patients`)
 - **`GET /`**: Returns an array of patient documents. Supports pagination & search queries.

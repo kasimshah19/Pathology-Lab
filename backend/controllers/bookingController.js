@@ -59,11 +59,12 @@ export const createBooking = async (req, res) => {
 
 export const getAllBookings = async (req, res) => {
   try {
-    const { status, paymentStatus, search, page = 1, limit = 20 } = req.query;
+    const { status, paymentStatus, search, patient, page = 1, limit = 20 } = req.query;
     const query = {};
 
     if (status) query.status = status;
     if (paymentStatus) query.paymentStatus = paymentStatus;
+    if (patient) query.patient = patient;
     
     if (search) {
        // Search by bookingId (exact) or patient name (regex)

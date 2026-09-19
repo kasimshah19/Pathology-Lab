@@ -6,6 +6,7 @@ import {
   getAllUsers,
   updateUserStatus,
   updateUserRole,
+  updateUserDetails,
   changeMyPassword,
 } from '../controllers/authController.js';
 import { protect, authorizeRoles } from '../middleware/authMiddleware.js';
@@ -24,5 +25,6 @@ router.patch('/change-password', protect, changeMyPassword);
 router.get('/users', protect, authorizeRoles('admin'), getAllUsers);
 router.patch('/users/:id/status', protect, authorizeRoles('admin'), updateUserStatus);
 router.patch('/users/:id/role', protect, authorizeRoles('admin'), updateUserRole);
+router.put('/users/:id', protect, authorizeRoles('admin'), updateUserDetails);
 
 export default router;

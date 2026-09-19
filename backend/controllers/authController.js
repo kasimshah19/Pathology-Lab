@@ -242,6 +242,52 @@ export const updateUserRole = async (req, res) => {
   }
 };
 
+// @desc    Update user basic details (name, email, phone)
+// @route   PUT /api/auth/users/:id
+// @access  Private/Admin
+export const updateUserDetails = async (req, res) => {
+  try {
+    const { name, email, phone } = req.body;
+    const userToUpdate = await User.findById(req.params.id);
+
+    if (!userToUpdate) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    if (email && email !== userToUpdate.email) {
+      const existingUser = await User.findOne({ email });
+      if (existingUser && existingUser._id.toString() !== userToUpdate._id.toString()) {
+        return res.status(400).json({ success: false, message: 'Email already in use' });
+      }
+      userToUpdate.email = email;
+    }
+
+    if (name) userToUpdate.name = name;
+    if (phone !== undefined) userToUpdate.phone = phone;
+
+    await userToUpdate.save();
+
+    return res.status(200).json({
+      success: true,
+      message: 'User details updated successfully',
+      data: {
+        _id: userToUpdate._id,
+        name: userToUpdate.name,
+        email: userToUpdate.email,
+        phone: userToUpdate.phone,
+        role: userToUpdate.role,
+        isActive: userToUpdate.isActive,
+      }
+    });
+  } catch (error) {
+    console.error("Update User Details Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error while updating user details",
+    });
+  }
+};
+
 // @desc    Change logged-in user password
 // @route   PATCH /api/auth/change-password
 // @access  Private (All Roles)

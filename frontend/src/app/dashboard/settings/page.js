@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/components/Toast';
 import StaffFormModal from '@/components/StaffFormModal';
+import EditStaffModal from '@/components/EditStaffModal';
 import api from '@/lib/api';
 import {
   Save,
@@ -15,6 +16,7 @@ import {
   ShieldCheck,
   Building2,
   ChevronDown,
+  Pencil,
 } from 'lucide-react';
 
 const roleStyles = {
@@ -116,6 +118,9 @@ function StaffRowSkeleton() {
           <div className="w-9 h-5 bg-slate-200 rounded-full"></div>
         </div>
       </td>
+      <td className="px-4 py-3.5">
+        <div className="w-6 h-6 bg-slate-200 rounded-md"></div>
+      </td>
     </tr>
   );
 }
@@ -136,6 +141,7 @@ export default function SettingsPage() {
   const [staff, setStaff] = useState([]);
   const [loadingStaff, setLoadingStaff] = useState(true);
   const [staffModalOpen, setStaffModalOpen] = useState(false);
+  const [editingStaff, setEditingStaff] = useState(null);
   const [updatingId, setUpdatingId] = useState(null);
 
   // Security check: only admins
@@ -304,6 +310,7 @@ export default function SettingsPage() {
                     <th className="text-left px-4 py-3 font-semibold text-slate-500 text-xs uppercase tracking-wider">Contact</th>
                     <th className="text-left px-4 py-3 font-semibold text-slate-500 text-xs uppercase tracking-wider">Role</th>
                     <th className="text-center px-4 py-3 font-semibold text-slate-500 text-xs uppercase tracking-wider">Status</th>
+                    <th className="text-center px-4 py-3 font-semibold text-slate-500 text-xs uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
@@ -343,6 +350,17 @@ export default function SettingsPage() {
                               </label>
                             </div>
                           </td>
+                          <td className="px-4 py-3.5">
+                            <div className="flex justify-center">
+                              <button
+                                onClick={() => setEditingStaff(s)}
+                                className="p-1.5 text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+                                title="Edit Staff Details"
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
                         </tr>
                       );
                     })
@@ -355,6 +373,7 @@ export default function SettingsPage() {
       )}
 
       <StaffFormModal open={staffModalOpen} onClose={() => setStaffModalOpen(false)} onSuccess={(msg) => { addToast(msg, 'success'); fetchStaff(); }} />
+      <EditStaffModal open={!!editingStaff} staff={editingStaff} onClose={() => setEditingStaff(null)} onSuccess={(msg) => { addToast(msg, 'success'); fetchStaff(); }} />
     </div>
   );
 }

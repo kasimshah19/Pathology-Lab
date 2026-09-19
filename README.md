@@ -98,13 +98,10 @@ This project digitalizes the entire pathology workflow. It solves the aforementi
 
 ## Live Demo
 
-### Frontend
-Vercel:
-[Live Frontend](https://pathology-lab-xl.vercel.app)
-
-### Backend / API
-Render:
-[Live Backend API](https://pathology-lab-r16i.onrender.com)
+| Component | Hosting Platform | Description | Access Link | Status |
+|-----------|-----------------|-------------|-------------|:------:|
+| **Frontend UI** | Vercel | Next.js App Router (Dashboard, Modals, PWA) | [Live Frontend](https://pathology-lab-xl.vercel.app) | 🟢 Live |
+| **Backend API** | Render | Node.js / Express.js REST API & PDF Engine | [Live API Base](https://pathology-lab-r16i.onrender.com) | 🟢 Live |
 
 ---
 

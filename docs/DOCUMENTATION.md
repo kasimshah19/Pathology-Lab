@@ -110,7 +110,7 @@ All requests must include the header `Authorization: Bearer <token>` unless stat
 - **`PUT /:id`**: Updates test parameters (price, range, status). Requires `admin` role.
 
 ### 3.4 Booking API (`/api/bookings`)
-- **`GET /`**: Retrieves bookings. Can filter by status (e.g., `?status=pending`).
+- **`GET /`**: Retrieves bookings. Can filter by status (e.g., `?status=pending`), perform global searches (`?search=...`), and filter by a specific patient (`?patient=<patientId>`).
 - **`POST /`**: Creates a new booking, computes `totalAmount`, sets status to `pending`.
 - **`PUT /:id/status`**: Updates the lifecycle status of the booking.
 - **`PUT /:id/payment`**: Updates payment status (e.g., changing `unpaid` to `paid`).
@@ -187,12 +187,17 @@ The `GET /api/bookings` endpoint supports a powerful `search` parameter.
 - Simultaneously, it performs a Regex search on the `Patient` model's `name` field. It extracts the matched `Patient` IDs and uses the `$in` operator to fetch bookings belonging to those patients.
 - This allows a receptionist to type either "BK-0001" or "John Doe" into the same search bar to find the booking.
 
-### 7.3 Status Guardrails
+### 7.3 Patient-Specific Filtering
+In addition to global searches, the `GET /api/bookings` endpoint supports a `patient` query parameter.
+- When `?patient=<patientId>` is provided, the API enforces an exact match against the booking's `patient` ObjectId.
+- This is specifically utilized by the Patient Detail Page to render a complete, paginated booking history for an individual patient alongside summary statistics.
+
+### 7.4 Status Guardrails
 The `updateBookingStatus` explicitly restricts status changes to a hardcoded array:
 `['pending', 'sample_collected', 'result_entered', 'report_ready', 'delivered']`.
 - If the status is moved to `sample_collected`, a `sampleCollectedAt` timestamp is automatically stamped.
 
-### 7.4 Cascading Deletes
+### 7.5 Cascading Deletes
 When a Booking is deleted via `DELETE /api/bookings/:id`, the system utilizes a cascading delete pattern. It first runs `Report.deleteMany({ booking: booking._id })` to ensure no orphaned diagnostic reports remain in the database before deleting the booking itself.
 
 ---

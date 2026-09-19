@@ -234,8 +234,11 @@ Blood Lab/
 
 ### User & Role Management
 - Secure Login with JWT.
-- Role-based views: Admin, Receptionist, Technician.
-- Account activation/deactivation.
+- Role-based views & permissions (RBAC): Admin, Receptionist, Technician.
+  - **Admin**: Full access, including Settings (Staff management) and Test Catalog editing.
+  - **Receptionist & Technician**: Access to specific domains without administrative rights.
+- Self-service "Change Password" functionality available to all roles.
+- Admin capabilities to add, edit (Name, Email, Phone), and activate/deactivate staff accounts.
 
 ### Patient Management
 - Register new patients with demographics.
@@ -316,6 +319,9 @@ The backend exposes RESTful endpoints. All endpoints under `/api/` (except login
 |--------|----------|----------------|---------|
 | POST | `/api/auth/login` | None | Authenticate user, returns JWT & user object. |
 | GET | `/api/auth/me` | Required | Get current logged-in user profile. |
+| PATCH | `/api/auth/change-password` | Required | Change own password for the logged-in user. |
+| POST | `/api/auth/register` | Admin Only | Register a new staff member. |
+| PUT | `/api/auth/users/:id` | Admin Only | Update basic details (name, email, phone) of a staff member. |
 | GET | `/api/patients` | Required | Retrieve list of all patients. |
 | POST | `/api/patients` | Required | Register a new patient. |
 | GET | `/api/tests` | Required | Retrieve test catalog. |

@@ -6,6 +6,7 @@ import {
   getAllUsers,
   updateUserStatus,
   updateUserRole,
+  changeMyPassword,
 } from '../controllers/authController.js';
 import { protect, authorizeRoles } from '../middleware/authMiddleware.js';
 
@@ -17,6 +18,7 @@ router.post('/login', loginUser);
 
 // Private auth routes (require valid token)
 router.get('/me', protect, getMyProfile);
+router.patch('/change-password', protect, changeMyPassword);
 
 // Admin only user management routes
 router.get('/users', protect, authorizeRoles('admin'), getAllUsers);

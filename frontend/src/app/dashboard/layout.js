@@ -18,7 +18,9 @@ import {
   Menu,
   X,
   Microscope,
+  KeyRound,
 } from 'lucide-react';
+import ChangePasswordModal from '@/components/ChangePasswordModal';
 
 const navItems = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -114,6 +116,7 @@ function Sidebar({ open, onClose, user }) {
 function TopNavbar({ onMenuClick, user, logout }) {
   const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
 
   // Derive page title from pathname
   const getPageTitle = () => {
@@ -165,6 +168,16 @@ function TopNavbar({ onMenuClick, user, logout }) {
               <button
                 onClick={() => {
                   setDropdownOpen(false);
+                  setPasswordModalOpen(true);
+                }}
+                className="w-full flex items-center gap-2.5 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+              >
+                <KeyRound className="w-4 h-4" />
+                Change Password
+              </button>
+              <button
+                onClick={() => {
+                  setDropdownOpen(false);
                   logout();
                 }}
                 className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors"
@@ -176,6 +189,11 @@ function TopNavbar({ onMenuClick, user, logout }) {
           </>
         )}
       </div>
+
+      <ChangePasswordModal 
+        isOpen={passwordModalOpen} 
+        onClose={() => setPasswordModalOpen(false)} 
+      />
     </header>
   );
 }

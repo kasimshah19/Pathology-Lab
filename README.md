@@ -291,30 +291,66 @@ Blood Lab/
 
 ```mermaid
 sequenceDiagram
-    participant U as User (Frontend)
-    participant A as API (Express)
+    autonumber
+    actor Rec as Receptionist
+    actor Tech as Technician
+    actor Adm as Admin
+    participant F as Frontend (Next.js)
+    participant A as Backend API (Express)
     participant D as Database (MongoDB)
     participant P as PDF Engine (Puppeteer)
 
-    U->>A: POST /api/bookings (Create)
-    A->>D: Save Booking
-    D-->>A: Booking ID (BK-0001)
-    A-->>U: 201 Created
+    %% Patient Registration & Booking
+    Rec->>F: Register New Patient
+    F->>A: POST /api/patients
+    A->>D: Save Patient (PAT-XXXX)
+    D-->>A: Patient Info
+    A-->>F: 201 Created
+    
+    Rec->>F: Create Booking & Select Tests
+    F->>A: POST /api/bookings
+    A->>D: Save Booking (Pending)
+    D-->>A: Booking ID (BK-XXXX)
+    A-->>F: 201 Created
 
-    U->>A: PUT /api/bookings/:id (Update Status to Testing)
-    A->>D: Update Status
-    A-->>U: 200 OK
+    %% Sample Collection
+    Rec->>F: Mark Sample Collected
+    F->>A: PUT /api/bookings/:id/status (sample_collected)
+    A->>D: Update Booking Status
+    A->>D: Log Activity (ActivityLog)
+    A-->>F: 200 OK
 
-    U->>A: POST /api/reports (Enter Results)
-    A->>D: Save Report Data
-    A->>D: Update Booking to Completed
-    A-->>U: 201 Created
+    %% Testing & Results
+    Tech->>F: Start Testing
+    F->>A: PUT /api/bookings/:id/status (testing)
+    A->>D: Update Booking Status
+    A-->>F: 200 OK
 
-    U->>A: GET /api/reports/download/:id
-    A->>D: Fetch Booking, Patient, Results
+    Tech->>F: Enter Test Results
+    F->>A: POST /api/reports
+    A->>D: Save Results
+    A->>D: Update Booking Status (completed)
+    A->>D: Log Activity (ActivityLog)
+    A-->>F: 201 Created
+
+    %% Report Generation
+    Rec->>F: Download PDF Report
+    F->>A: GET /api/reports/:id/pdf
+    A->>D: Fetch Booking & Results
     A->>P: Render HTML Template
-    P-->>A: PDF Buffer
-    A-->>U: Downloadable PDF File
+    P-->>A: Generated PDF Buffer
+    A-->>F: 200 OK (application/pdf)
+
+    %% Admin Features (Analytics & Export)
+    Adm->>F: View Analytics Dashboard
+    F->>A: GET /api/analytics/revenue
+    A->>D: Aggregate Revenue Data
+    A-->>F: 200 OK (Chart Data)
+
+    Adm->>F: Export Bookings to CSV
+    F->>A: GET /api/bookings/export/csv
+    A->>D: Fetch Bookings
+    A-->>F: 200 OK (text/csv)
 ```
 
 ---

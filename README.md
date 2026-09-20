@@ -262,6 +262,7 @@ Blood Lab/
 
 ### Email Notifications
 - Fully automated, asynchronous email dispatch using `nodemailer` and Gmail SMTP.
+- Uses a secure proxy architecture: The Render backend forwards email data to a Vercel Serverless Function (`/api/send-email`) using a secure `EMAIL_API_SECRET` to bypass Render's Free Tier outbound SMTP restrictions.
 - Sends a styled booking confirmation email detailing booked tests and total amount instantly after booking.
 - Notifies patients when their report status changes to "report_ready".
 - Fails gracefully without crashing the system if email is unconfigured or a network error occurs.
@@ -384,6 +385,7 @@ MONGO_URI=
 JWT_SECRET=
 NODE_ENV=
 PUPPETEER_SKIP_DOWNLOAD=
+FRONTEND_URL=
 ```
 
 ### Frontend (`frontend/.env.local`)
@@ -391,6 +393,9 @@ Must be configured in the deployment environment (Vercel Config).
 
 ```env
 NEXT_PUBLIC_API_URL=
+EMAIL_USER=
+EMAIL_APP_PASSWORD=
+EMAIL_API_SECRET=
 ```
 
 ---
@@ -527,6 +532,7 @@ Automated tests (Unit, Integration, E2E) are currently not present in the reposi
 - **Why MongoDB?** Pathology results vary wildly in format. Some are numerical, some are long-form text (e.g., Biopsy reports). A NoSQL document structure accommodates this variance better than rigid SQL tables.
 - **Why Next.js App Router?** It provides a highly optimized, modern React architecture. The ability to transition smoothly from server components to client components makes the dashboard fast and interactive.
 - **Why Puppeteer?** While heavy, Puppeteer guarantees that the HTML/CSS template will render exactly as designed into a PDF, including complex CSS grid layouts and SVGs, which traditional PDF libraries struggle with.
+- **Why Vercel API Proxy for Emails?** Render's Free Tier blocks outbound SMTP traffic on ports like 587 and 465, preventing direct email dispatch from the backend. To bypass this, the Next.js frontend (hosted on Vercel) exposes an API route (`/api/send-email`) that securely proxies email requests from the backend using an API secret. This ensures emails are delivered without requiring a paid Render plan.
 
 ---
 
@@ -551,6 +557,7 @@ Automated tests (Unit, Integration, E2E) are currently not present in the reposi
 - **Database Connection Failed:** Ensure your current IP address is whitelisted in MongoDB Atlas Network Access settings.
 - **PDF Generation Failing in Production (Render):** Render does not have Chrome installed by default. You may need to set `PUPPETEER_SKIP_DOWNLOAD=true` and configure the build environment to install Chromium, or use a Dockerfile.
 - **PWA Not Installing:** Ensure the site is served over HTTPS and `manifest.json` is correctly linked in `layout.js`.
+- **Email Not Sending:** If automated emails aren't arriving, ensure the `FRONTEND_URL` is set correctly in the Render environment variables, and `EMAIL_USER`, `EMAIL_APP_PASSWORD`, `EMAIL_API_SECRET` are configured correctly in Vercel. Ensure you Redeploy Vercel after updating environment variables.
 
 ---
 

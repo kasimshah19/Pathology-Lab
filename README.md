@@ -80,6 +80,16 @@ A comprehensive, full-stack, and PWA-enabled pathology laboratory management pla
 
 ---
 
+## Recent Enhancements (v1.0.0)
+
+This project has been recently upgraded to include industry-standard best practices:
+- **Interactive API Documentation:** Integrated **Swagger UI** (OpenAPI 3.0) for live, interactive API testing directly from the browser at `/api-docs`. Includes JWT token authorization testing.
+- **Robust Automated Testing:** Implemented a full integration testing suite using **Jest**, **Supertest**, and **MongoMemoryServer**. The suite boasts a 100% pass rate across 26 tests covering critical paths (Authentication, Patients, Bookings, Reports, Analytics).
+- **Full Containerization:** Added comprehensive **Docker** support. Features optimized multi-stage builds for both the backend (Node.js Alpine) and frontend (Next.js standalone mode), orchestrated seamlessly via **Docker Compose**.
+- **Security & Reliability:** Hardened API endpoints with `helmet`, `express-rate-limit`, and NoSQL injection prevention.
+
+---
+
 ## Project Overview
 
 The Pathology Lab Management System is a modern web application tailored for diagnostic centers, hospitals, and independent pathology labs. It offers an end-to-end workflow starting from patient registration, test cataloging, and sample collection, to result entry and automated PDF report generation.

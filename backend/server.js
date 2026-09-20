@@ -21,6 +21,7 @@ import bookingRoutes from './routes/bookingRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
 import activityLogRoutes from './routes/activityLogRoutes.js';
+import analyticsRoutes from './routes/analyticsRoutes.js';
 
 // Routes
 app.get('/api/health', (req, res) => {
@@ -35,6 +36,7 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/activity-logs', activityLogRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 const PORT = process.env.PORT || 5000;
 

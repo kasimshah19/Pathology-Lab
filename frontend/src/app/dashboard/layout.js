@@ -14,6 +14,7 @@ import {
   FileText,
   Settings,
   History,
+  BarChart3,
   LogOut,
   ChevronDown,
   Menu,
@@ -32,6 +33,7 @@ const navItems = [
 ];
 
 const adminOnlyItems = [
+  { label: 'Analytics', href: '/dashboard/analytics', icon: BarChart3 },
   { label: 'Activity Log', href: '/dashboard/activity-log', icon: History },
   { label: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];

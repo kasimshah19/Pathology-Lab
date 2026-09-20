@@ -40,8 +40,8 @@ test('E2E Flow: Create Patient and Booking', async ({ page }) => {
   }
 
   // Wait for Dashboard to load
-  console.log('Waiting for Dashboard...');
-  await expect(page.getByText(/Dashboard/i).first()).toBeVisible({ timeout: 10000 });
+  console.log('Wait for navigation to dashboard');
+  await expect(page.getByText(/Welcome back/i).first()).toBeVisible({ timeout: 10000 });
 
   // 1. Create Patient
   console.log('Navigating to Patients...');

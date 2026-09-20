@@ -30,6 +30,28 @@ export const sendEmail = async (to, subject, htmlContent) => {
       return;
     }
 
+    // Render Free Tier blocks outbound SMTP. We forward to Vercel (Frontend) instead.
+    if (process.env.FRONTEND_URL) {
+      console.log('Forwarding email request to Vercel API...');
+      // Remove trailing slash if present
+      const baseUrl = process.env.FRONTEND_URL.replace(/\/$/, '');
+      const response = await fetch(`${baseUrl}/api/send-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to, 
+          subject, 
+          htmlContent,
+          secret: process.env.EMAIL_API_SECRET || 'my-secret-key'
+        })
+      });
+      const data = await response.json();
+      if (!data.success) throw new Error(data.message);
+      console.log(`Email sent successfully via Vercel to ${to}`);
+      return;
+    }
+
+    // Fallback: direct SMTP sending (works locally)
     const info = await transporter.sendMail({
       from: `"Al-Hayat Diagnostic Lab" <${process.env.EMAIL_USER}>`,
       to,

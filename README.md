@@ -278,9 +278,13 @@ Blood Lab/
 6. **Result Entry:** Technician enters numerical/text values for the tests, adds remarks. Status becomes `completed`.
 7. **Report Generation:** Admin/Receptionist clicks "Download Report". Backend generates a PDF dynamically.
 
-### System Workflow (Mermaid)
+## Documentation & Diagrams
 
-[View the detailed end-to-end Sequence Diagram here](./SEQUENCE_DIAGRAM.md)
+To help understand the system design, check out these architectural diagrams:
+- [**High-Level Architecture Diagram**](./ARCHITECTURE_DIAGRAM.md) - Explains the Client-Server split and deployment.
+- [**System Workflow Diagram**](./WORKFLOW_DIAGRAM.md) - Shows the step-by-step operational flow of the lab.
+- [**Data Flow Diagram (DFD)**](./DATAFLOW_DIAGRAM.md) - Illustrates how data moves between actors, processes, and databases.
+- [**End-to-End Sequence Diagram**](./SEQUENCE_DIAGRAM.md) - Detailed technical sequence from booking to report generation.
 
 ---
 

@@ -126,6 +126,7 @@ This project digitalizes the entire pathology workflow. It solves the aforementi
 - **Authentication:** JSON Web Tokens (JWT) & bcryptjs - Secure password hashing and stateless session management.
 - **Report Generation:** `pdf-lib` and `puppeteer` - Dynamically generates and manipulates PDF files for patient reports.
 - **Email Notifications:** `nodemailer` - Sends automated HTML emails for booking confirmations and report readiness.
+- **File Uploads:** `multer` & `cloudinary` - Streams patient photos and prescription documents directly to Cloudinary.
 - **Data Export:** `json2csv` - Robust CSV parsing and stream generation for structured data exports.
 - **Middleware:** CORS, Express JSON parser.
 
@@ -226,6 +227,7 @@ Blood Lab/
 ### Patient Management
 - Register new patients with demographics.
 - Auto-generation of unique Patient IDs (`PAT-XXXX`).
+- Upload and display patient profile photos (hosted via Cloudinary).
 - Comprehensive Patient Detail Page displaying full profile and edit capabilities.
 - View complete patient booking history with summary stats (total visits, amount spent) and clickable row navigation.
 
@@ -236,6 +238,7 @@ Blood Lab/
 
 ### Booking & Billing
 - Create bookings mapping patients to multiple tests.
+- Option to upload prescription or referral documents during booking creation.
 - Auto-generation of Booking IDs (`BK-XXXX`).
 - Track payment status (`paid`, `unpaid`, `partial`).
 - Track booking lifecycle (`pending`, `sample_collected`, `testing`, `completed`).
@@ -386,6 +389,9 @@ JWT_SECRET=
 NODE_ENV=
 PUPPETEER_SKIP_DOWNLOAD=
 FRONTEND_URL=
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 ```
 
 ### Frontend (`frontend/.env.local`)

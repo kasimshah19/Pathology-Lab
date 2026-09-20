@@ -1,5 +1,6 @@
 import Patient from '../models/Patient.js';
 import { logActivity } from '../utils/logActivity.js';
+import { Parser } from 'json2csv';
 
 // @desc    Create new patient
 // @route   POST /api/patients
@@ -176,15 +177,66 @@ export const deletePatient = async (req, res) => {
       patient._id
     );
 
-    return res.status(200).json({ 
-      success: true, 
-      message: "Patient deleted successfully" 
-    });
-  } catch (error) {
-    console.error("Delete Patient Error:", error);
     return res.status(500).json({ 
       success: false, 
       message: "Server error while deleting patient" 
+    });
+  }
+};
+
+// @desc    Export all patients to CSV
+// @route   GET /api/patients/export/csv
+// @access  Private/Admin
+export const exportPatientsCSV = async (req, res) => {
+  try {
+    const { search } = req.query;
+    const query = {};
+    
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { phone: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    const patients = await Patient.find(query).sort({ createdAt: -1 });
+
+    const csvData = patients.map(p => ({
+      'Patient ID': p.patientId,
+      'Name': p.name,
+      'Age': p.age,
+      'Gender': p.gender,
+      'Phone': p.phone || '',
+      'Email': p.email || '',
+      'Address': p.address || '',
+      'Registered On': new Date(p.createdAt).toISOString()
+    }));
+
+    if (csvData.length === 0) {
+      return res.status(404).json({ success: false, message: 'No patients found to export' });
+    }
+
+    const fields = ['Patient ID', 'Name', 'Age', 'Gender', 'Phone', 'Email', 'Address', 'Registered On'];
+    const json2csvParser = new Parser({ fields });
+    const csv = json2csvParser.parse(csvData);
+
+    const dateStr = new Date().toISOString().split('T')[0];
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', `attachment; filename=patients-export-${dateStr}.csv`);
+    res.status(200).send(csv);
+
+    await logActivity(
+      req,
+      'EXPORT_PATIENTS',
+      `Exported ${patients.length} patients to CSV`,
+      'Patient',
+      null
+    );
+  } catch (error) {
+    console.error("Export Patients Error:", error);
+    return res.status(500).json({ 
+      success: false, 
+      message: "Server error while exporting patients" 
     });
   }
 };

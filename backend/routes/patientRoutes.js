@@ -4,7 +4,8 @@ import {
   getAllPatients, 
   getPatientById, 
   updatePatient, 
-  deletePatient 
+  deletePatient,
+  exportPatientsCSV
 } from '../controllers/patientController.js';
 import { protect, authorizeRoles } from '../middleware/authMiddleware.js';
 
@@ -13,6 +14,8 @@ const router = express.Router();
 router.route('/')
   .post(protect, createPatient)
   .get(protect, getAllPatients);
+
+router.get('/export/csv', protect, authorizeRoles('admin'), exportPatientsCSV);
 
 router.route('/:id')
   .get(protect, getPatientById)

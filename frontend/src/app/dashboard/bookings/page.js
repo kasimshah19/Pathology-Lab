@@ -16,9 +16,9 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronDown,
-  ClipboardList,
   Loader2,
   Check,
+  Download,
 } from 'lucide-react';
 
 // Status badge colors
@@ -147,6 +147,7 @@ export default function BookingsPage() {
   const [deletingId, setDeletingId] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [updatingId, setUpdatingId] = useState(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   const fetchBookings = useCallback(async (searchVal, pageVal, status, payment) => {
     setLoading(true);
@@ -227,6 +228,38 @@ export default function BookingsPage() {
     setPage(1);
   };
 
+  const handleExportCSV = async () => {
+    setIsExporting(true);
+    addToast('Generating CSV...', 'success');
+    try {
+      const params = {};
+      if (search) params.search = search;
+      if (statusFilter) params.status = statusFilter;
+      if (paymentFilter) params.paymentStatus = paymentFilter;
+
+      const response = await api.get('/bookings/export/csv', {
+        params,
+        responseType: 'blob',
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      const dateStr = new Date().toISOString().split('T')[0];
+      link.setAttribute('download', `bookings-export-${dateStr}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      addToast('Export successful', 'success');
+    } catch (error) {
+      addToast('Failed to export CSV', 'error');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const SkeletonRow = () => (
     <tr className="animate-pulse">
       {[...Array(7)].map((_, i) => (
@@ -285,13 +318,25 @@ export default function BookingsPage() {
           <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Bookings</h2>
           <p className="text-sm text-slate-400 mt-0.5">{total} booking{total !== 1 ? 's' : ''}</p>
         </div>
-        <button
-          onClick={() => setModalOpen(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 rounded-xl shadow-sm shadow-teal-200/40 transition-all duration-200"
-        >
-          <Plus className="w-4 h-4" />
-          New Booking
-        </button>
+        <div className="flex gap-2">
+          {isAdmin && (
+            <button
+              onClick={handleExportCSV}
+              disabled={isExporting}
+              className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl shadow-sm transition-all duration-200 disabled:opacity-50"
+            >
+              {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+              Export CSV
+            </button>
+          )}
+          <button
+            onClick={() => setModalOpen(true)}
+            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 rounded-xl shadow-sm shadow-teal-200/40 transition-all duration-200"
+          >
+            <Plus className="w-4 h-4" />
+            New Booking
+          </button>
+        </div>
       </div>
 
       {/* Filters */}

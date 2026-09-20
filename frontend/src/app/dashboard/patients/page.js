@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Users,
   Loader2,
+  Download,
 } from 'lucide-react';
 
 export default function PatientsPage() {
@@ -39,6 +40,8 @@ export default function PatientsPage() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const isAdmin = user?.role === 'admin';
 
   const fetchPatients = useCallback(async (searchVal, pageVal) => {
     setLoading(true);
@@ -106,6 +109,36 @@ export default function PatientsPage() {
     fetchPatients(search, page);
   };
 
+  const handleExportCSV = async () => {
+    setIsExporting(true);
+    addToast('Generating CSV...', 'success');
+    try {
+      const params = {};
+      if (search) params.search = search;
+
+      const response = await api.get('/patients/export/csv', {
+        params,
+        responseType: 'blob',
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      const dateStr = new Date().toISOString().split('T')[0];
+      link.setAttribute('download', `patients-export-${dateStr}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      addToast('Export successful', 'success');
+    } catch (error) {
+      addToast('Failed to export CSV', 'error');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   // Skeleton rows
   const SkeletonRow = () => (
     <tr className="animate-pulse">
@@ -155,13 +188,25 @@ export default function PatientsPage() {
           <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Patients</h2>
           <p className="text-sm text-slate-400 mt-0.5">{total} patient{total !== 1 ? 's' : ''} registered</p>
         </div>
-        <button
-          onClick={handleAddClick}
-          className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 rounded-xl shadow-sm shadow-teal-200/40 transition-all duration-200"
-        >
-          <Plus className="w-4 h-4" />
-          Add Patient
-        </button>
+        <div className="flex gap-2">
+          {isAdmin && (
+            <button
+              onClick={handleExportCSV}
+              disabled={isExporting}
+              className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl shadow-sm transition-all duration-200 disabled:opacity-50"
+            >
+              {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+              Export CSV
+            </button>
+          )}
+          <button
+            onClick={handleAddClick}
+            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 rounded-xl shadow-sm shadow-teal-200/40 transition-all duration-200"
+          >
+            <Plus className="w-4 h-4" />
+            Add Patient
+          </button>
+        </div>
       </div>
 
       {/* Search */}

@@ -4,6 +4,7 @@ import Test from '../models/Test.js';
 import Report from '../models/Report.js';
 import { generateInvoicePDF } from '../utils/pdfGenerator.js';
 import { logActivity } from '../utils/logActivity.js';
+import { Parser } from 'json2csv';
 
 export const createBooking = async (req, res) => {
   try {
@@ -249,6 +250,67 @@ export const generateInvoice = async (req, res) => {
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename=Invoice_${booking.bookingId || booking._id}.pdf`);
     res.send(pdfBuffer);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+export const exportBookingsCSV = async (req, res) => {
+  try {
+    const { status, paymentStatus, search } = req.query;
+    const query = {};
+
+    if (status) query.status = status;
+    if (paymentStatus) query.paymentStatus = paymentStatus;
+    
+    if (search) {
+       const patients = await Patient.find({ name: { $regex: search, $options: 'i' } }).select('_id');
+       const patientIds = patients.map(p => p._id);
+       
+       query.$or = [
+         { bookingId: { $regex: search, $options: 'i' } },
+         { patient: { $in: patientIds } }
+       ];
+    }
+
+    const bookings = await Booking.find(query)
+      .sort({ createdAt: -1 })
+      .populate('patient', 'name phone patientId')
+      .populate('tests', 'testName price');
+
+    const csvData = bookings.map(b => ({
+      'Booking ID': b.bookingId,
+      'Patient Name': b.patient?.name || 'N/A',
+      'Patient ID': b.patient?.patientId || 'N/A',
+      'Phone': b.patient?.phone || 'N/A',
+      'Tests': b.tests?.map(t => t.testName).join(', ') || '',
+      'Total Amount': b.totalAmount,
+      'Status': b.status,
+      'Payment Status': b.paymentStatus,
+      'Referred By': b.referredBy || '',
+      'Date Created': new Date(b.createdAt).toISOString()
+    }));
+
+    if (csvData.length === 0) {
+      return res.status(404).json({ success: false, message: 'No bookings found to export' });
+    }
+
+    const fields = ['Booking ID', 'Patient Name', 'Patient ID', 'Phone', 'Tests', 'Total Amount', 'Status', 'Payment Status', 'Referred By', 'Date Created'];
+    const json2csvParser = new Parser({ fields });
+    const csv = json2csvParser.parse(csvData);
+
+    const dateStr = new Date().toISOString().split('T')[0];
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', `attachment; filename=bookings-export-${dateStr}.csv`);
+    res.status(200).send(csv);
+
+    await logActivity(
+      req,
+      'EXPORT_BOOKINGS',
+      `Exported ${bookings.length} bookings to CSV`,
+      'Booking',
+      null
+    );
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

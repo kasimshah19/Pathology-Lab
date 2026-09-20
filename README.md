@@ -463,6 +463,30 @@ EMAIL_API_SECRET=
    ```
    *The frontend will start on port 3000.*
 
+### Docker Setup
+
+You can run the entire application stack using Docker Compose.
+
+**Prerequisites:**
+- [Docker Desktop](https://www.docker.com/products/docker-desktop) installed and running.
+
+**Important Note on Environment Variables:**
+Docker relies on the `.env` files in the backend and frontend folders. Since these are not committed to Git for security reasons, you **must create them manually** before running Docker:
+1. Create `backend/.env` with your MongoDB URI, JWT secret, etc.
+2. Create `frontend/.env.local` with your frontend variables.
+
+**To build and run:**
+From the root directory of the project, run:
+```bash
+docker-compose up --build
+```
+This will build optimized production images for both the frontend and backend and start them on ports `3000` and `5000` respectively.
+
+**To stop:**
+```bash
+docker-compose down
+```
+
 ---
 
 ## Deployment Guide

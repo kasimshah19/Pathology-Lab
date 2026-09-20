@@ -127,6 +127,7 @@ This project digitalizes the entire pathology workflow. It solves the aforementi
 - **Framework:** Express.js - Minimalist web framework for routing and middleware management.
 - **Authentication:** JSON Web Tokens (JWT) & bcryptjs - Secure password hashing and stateless session management.
 - **Report Generation:** `pdf-lib` and `puppeteer` - Dynamically generates and manipulates PDF files for patient reports.
+- **API Documentation:** `swagger-ui-express` & `swagger-jsdoc` - Interactive OpenAPI 3.0 documentation.
 - **Email Notifications:** `nodemailer` - Sends automated HTML emails for booking confirmations and report readiness.
 - **File Uploads:** `multer` & `cloudinary` - Streams patient photos and prescription documents directly to Cloudinary.
 - **Data Export:** `json2csv` - Robust CSV parsing and stream generation for structured data exports.
@@ -304,8 +305,17 @@ To help understand the system design, check out these architectural diagrams:
 
 ## API Documentation
 
+### Interactive Swagger UI
+The project includes a built-in, interactive API documentation interface powered by **Swagger (OpenAPI 3.0)**.
+- **Live Endpoint:** `GET /api-docs` (Available locally at `http://localhost:5000/api-docs` or on the deployed Render URL).
+- **Features:** 
+  - Visualize all available API endpoints, request body schemas, and expected responses.
+  - Fully testable: Use the **Authorize** button to inject your JWT token, then click **Try it out** to execute live API calls directly from your browser (no Postman required).
+- **Tech Used:** Uses `swagger-jsdoc` to generate documentation from inline JSDoc comments within the route files, and `swagger-ui-express` to serve the visual interface.
+
 [View the comprehensive API Documentation & Endpoint Examples here](./API_DOCUMENTATION.md)
 
+### Endpoints Overview
 The backend exposes RESTful endpoints. All endpoints under `/api/` (except login) require a valid JWT Bearer token.
 
 | Method | Endpoint | Authentication | Purpose |

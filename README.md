@@ -124,6 +124,7 @@ This project digitalizes the entire pathology workflow. It solves the aforementi
 - **Framework:** Express.js - Minimalist web framework for routing and middleware management.
 - **Authentication:** JSON Web Tokens (JWT) & bcryptjs - Secure password hashing and stateless session management.
 - **Report Generation:** `pdf-lib` and `puppeteer` - Dynamically generates and manipulates PDF files for patient reports.
+- **Email Notifications:** `nodemailer` - Sends automated HTML emails for booking confirmations and report readiness.
 - **Data Export:** `json2csv` - Robust CSV parsing and stream generation for structured data exports.
 - **Middleware:** CORS, Express JSON parser.
 
@@ -257,6 +258,12 @@ Blood Lab/
 - Admins can export structured data for Bookings and Patients directly to CSV formats.
 - Respects active search and status filters, generating targeted reports for accounting or sharing.
 - Automatically handles cell formatting (e.g. escaping phone numbers from scientific notation in Excel).
+
+### Email Notifications
+- Fully automated, asynchronous email dispatch using `nodemailer` and Gmail SMTP.
+- Sends a styled booking confirmation email detailing booked tests and total amount instantly after booking.
+- Notifies patients when their report status changes to "report_ready".
+- Fails gracefully without crashing the system if email is unconfigured or a network error occurs.
 
 ### PWA & Installation
 - Installable as a native app on mobile and desktop.
@@ -484,6 +491,7 @@ Automated tests (Unit, Integration, E2E) are currently not present in the reposi
 - Implement Jest for backend controller unit testing.
 - Use Supertest for API endpoint integration tests.
 - Use Cypress or Playwright for frontend E2E flows (Testing the booking lifecycle).
+- **Note:** The backend has partial test coverage using Jest & Supertest.
 
 ---
 
@@ -492,7 +500,6 @@ Automated tests (Unit, Integration, E2E) are currently not present in the reposi
 - **No Automated CI/CD:** Deployments are triggered automatically by commits, but there is no automated testing pipeline blocking bad commits.
 - **PDF Generation Overhead:** Puppeteer is heavy. Generating PDFs synchronously on the main Node thread can block the event loop under extremely high load.
 - **No Rate Limiting:** APIs are currently vulnerable to brute force without rate-limiting middleware.
-- **No Email Integration:** Reports must be downloaded and manually sent; there is no automated email dispatch system yet.
 
 ---
 
@@ -531,7 +538,7 @@ Automated tests (Unit, Integration, E2E) are currently not present in the reposi
 | Security | Partial | CORS and Auth are good; needs helmet.js and rate limiting. |
 | Deployment | Implemented | Vercel and Render connected via CI. |
 | Error Handling | Implemented | Toast notifications and API error wrappers are active. |
-| Testing | Not Present | Needs Jest/Cypress integration. |
+| Testing | Partial | Jest and Supertest suites are passing. |
 | Performance | Implemented | Next.js and PWA caching ensure fast delivery. |
 | Monitoring | Not Present | Needs integration with Sentry or Datadog for error tracking. |
 

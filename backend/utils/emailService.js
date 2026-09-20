@@ -3,13 +3,18 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Create reusable transporter object using the default SMTP transport
+// Create reusable transporter object using the explicit SMTP transport to avoid IPv6/Render issues
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false, // upgrade later with STARTTLS
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_APP_PASSWORD,
   },
+  tls: {
+    rejectUnauthorized: false
+  }
 });
 
 /**

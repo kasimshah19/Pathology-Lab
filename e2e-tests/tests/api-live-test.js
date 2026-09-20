@@ -80,7 +80,7 @@ const testLive = async () => {
     // 5. Create Booking (THIS TRIGGERS THE EMAIL)
     console.log('5️⃣ Creating Booking (Should trigger email)...');
     const bookingPayload = {
-      patientId: patientId,
+      patient: patientId,
       tests: [testId]
     };
     res = await fetch(`${baseUrl}/bookings`, {

@@ -245,6 +245,8 @@ Blood Lab/
 
 ## Application Workflow
 
+[View the Operational Flowchart (Workflow Diagram) here](./WORKFLOW_DIAGRAM.md)
+
 ### User Workflow
 
 1. **Authentication:** User visits the app and logs in. `AuthContext` decodes the JWT and determines the role.

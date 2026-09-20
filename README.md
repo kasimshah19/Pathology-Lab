@@ -141,39 +141,7 @@ The application follows a decoupled client-server architecture. The frontend is 
 
 ### Architecture Diagram
 
-```mermaid
-flowchart TB
-    Client((Client Device\nBrowser / PWA))
-    
-    subgraph "Vercel (Frontend)"
-        NextJS[Next.js App Router]
-        AuthContext[Auth Context]
-        Components[UI Components\nTailwind CSS]
-        APIClient[Axios Interceptors]
-    end
-    
-    subgraph "Render (Backend)"
-        Express[Express.js API]
-        AuthMiddleware[Auth & Role Middleware]
-        Controllers[Business Logic Controllers]
-        PDFGen[PDF Generator\nPuppeteer / pdf-lib]
-    end
-    
-    subgraph "Database Tier"
-        DB[(MongoDB)]
-    end
-
-    Client <-->|HTTPS / REST| NextJS
-    NextJS --> AuthContext
-    NextJS --> Components
-    NextJS --> APIClient
-    
-    APIClient <-->|HTTPS / JSON| Express
-    Express --> AuthMiddleware
-    AuthMiddleware --> Controllers
-    Controllers --> PDFGen
-    Controllers <-->|Mongoose ODM| DB
-```
+[View the full Architecture Diagram here](./ARCHITECTURE_DIAGRAM.md)
 
 ### Architecture Components Table
 
@@ -289,69 +257,7 @@ Blood Lab/
 
 ### System Workflow (Mermaid)
 
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Rec as Receptionist
-    actor Tech as Technician
-    actor Adm as Admin
-    participant F as Frontend (Next.js)
-    participant A as Backend API (Express)
-    participant D as Database (MongoDB)
-    participant P as PDF Engine (Puppeteer)
-
-    %% Patient Registration & Booking
-    Rec->>F: Register New Patient
-    F->>A: POST /api/patients
-    A->>D: Save Patient (PAT-XXXX)
-    D-->>A: Patient Info
-    A-->>F: 201 Created
-    
-    Rec->>F: Create Booking & Select Tests
-    F->>A: POST /api/bookings
-    A->>D: Save Booking (Pending)
-    D-->>A: Booking ID (BK-XXXX)
-    A-->>F: 201 Created
-
-    %% Sample Collection
-    Rec->>F: Mark Sample Collected
-    F->>A: PUT /api/bookings/:id/status (sample_collected)
-    A->>D: Update Booking Status
-    A->>D: Log Activity (ActivityLog)
-    A-->>F: 200 OK
-
-    %% Testing & Results
-    Tech->>F: Start Testing
-    F->>A: PUT /api/bookings/:id/status (testing)
-    A->>D: Update Booking Status
-    A-->>F: 200 OK
-
-    Tech->>F: Enter Test Results
-    F->>A: POST /api/reports
-    A->>D: Save Results
-    A->>D: Update Booking Status (completed)
-    A->>D: Log Activity (ActivityLog)
-    A-->>F: 201 Created
-
-    %% Report Generation
-    Rec->>F: Download PDF Report
-    F->>A: GET /api/reports/:id/pdf
-    A->>D: Fetch Booking & Results
-    A->>P: Render HTML Template
-    P-->>A: Generated PDF Buffer
-    A-->>F: 200 OK (application/pdf)
-
-    %% Admin Features (Analytics & Export)
-    Adm->>F: View Analytics Dashboard
-    F->>A: GET /api/analytics/revenue
-    A->>D: Aggregate Revenue Data
-    A-->>F: 200 OK (Chart Data)
-
-    Adm->>F: Export Bookings to CSV
-    F->>A: GET /api/bookings/export/csv
-    A->>D: Fetch Bookings
-    A-->>F: 200 OK (text/csv)
-```
+[View the detailed end-to-end Sequence Diagram here](./SEQUENCE_DIAGRAM.md)
 
 ---
 

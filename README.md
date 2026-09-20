@@ -286,6 +286,8 @@ Blood Lab/
 
 ## API Documentation
 
+[View the comprehensive API Documentation & Endpoint Examples here](./API_DOCUMENTATION.md)
+
 The backend exposes RESTful endpoints. All endpoints under `/api/` (except login) require a valid JWT Bearer token.
 
 | Method | Endpoint | Authentication | Purpose |

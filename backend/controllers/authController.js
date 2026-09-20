@@ -9,6 +9,10 @@ import { logActivity } from '../utils/logActivity.js';
 export const registerUser = async (req, res) => {
   try {
     const { name, email, password, role, phone } = req.body;
+    
+    if (!name || !email || !password) {
+      return res.status(400).json({ success: false, message: 'Please provide all required fields' });
+    }
 
     // Check if user already exists
     const userExists = await User.findOne({ email });
@@ -50,6 +54,9 @@ export const registerUser = async (req, res) => {
     });
   } catch (error) {
     console.error("Register Error:", error);
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ success: false, message: error.message });
+    }
     return res.status(500).json({
       success: false,
       message: "Server error during registration",

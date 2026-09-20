@@ -114,14 +114,17 @@ This project digitalizes the entire pathology workflow. It solves the aforementi
 - **Styling:** Tailwind CSS - Utility-first CSS framework for rapid UI development and responsive design.
 - **Icons:** Lucide React - Clean, modern iconography.
 - **State Management:** React Context API (`AuthContext`, `ToastProvider`) - Manages global authentication state and UI notifications.
+- **Data Visualization:** Recharts - Renders responsive interactive charts for analytics.
 - **PWA:** `@ducanh2912/next-pwa` - Implements service workers and manifest generation for offline capabilities and app installation.
 - **HTTP Client:** Axios - Handles API requests to the backend with interceptors for token injection.
+- **Date Formatting:** date-fns - Lightweight date manipulation and formatting library.
 
 ### Backend
 - **Runtime:** Node.js - Fast, asynchronous runtime for the API.
 - **Framework:** Express.js - Minimalist web framework for routing and middleware management.
 - **Authentication:** JSON Web Tokens (JWT) & bcryptjs - Secure password hashing and stateless session management.
 - **Report Generation:** `pdf-lib` and `puppeteer` - Dynamically generates and manipulates PDF files for patient reports.
+- **Data Export:** `json2csv` - Robust CSV parsing and stream generation for structured data exports.
 - **Middleware:** CORS, Express JSON parser.
 
 ### Database
@@ -206,6 +209,9 @@ Blood Lab/
   1. **Admin Login**:
      - Has full access to the system.
      - Can add new staff members (receptionists/technicians), manage the test catalog (add/edit/delete tests), and update basic lab settings (name, address, logo).
+     - Full access to the **Analytics Dashboard** to monitor revenue trends.
+     - Can view the comprehensive **Activity & Audit Log** of all staff actions.
+     - Capability to **Export Data** (Patients and Bookings) to CSV.
   2. **Receptionist Login**:
      - Primarily handles the front desk operations.
      - Can register new patients, book tests, and update booking payment/status (e.g., 'sample_collected').
@@ -236,6 +242,21 @@ Blood Lab/
 - Technicians can enter specific result values against booked tests.
 - Flag abnormal results automatically based on normal ranges.
 - Generate high-quality PDF reports with lab headers, footers, and patient details using Puppeteer.
+
+### Audit & Activity Logs
+- Comprehensive tracking of critical events (e.g., `CREATE_PATIENT`, `UPDATE_PAYMENT_STATUS`, `DELETE_BOOKING`).
+- Preserves the actor's username (even if deleted) for historical accuracy.
+- Helps maintain accountability and compliance within the laboratory.
+
+### Analytics & Reporting Dashboard
+- Interactive charts powered by `recharts`.
+- Visualize revenue aggregated by different periods (Last 7 Days, Last 30 Days, Last 12 Months).
+- Smart aggregation pipeline in MongoDB ensures dates with zero bookings are appropriately zero-filled in the charts.
+
+### Data Export (CSV)
+- Admins can export structured data for Bookings and Patients directly to CSV formats.
+- Respects active search and status filters, generating targeted reports for accounting or sharing.
+- Automatically handles cell formatting (e.g. escaping phone numbers from scientific notation in Excel).
 
 ### PWA & Installation
 - Installable as a native app on mobile and desktop.
@@ -276,14 +297,18 @@ The backend exposes RESTful endpoints. All endpoints under `/api/` (except login
 | PUT | `/api/auth/users/:id` | Admin Only | Update basic details (name, email, phone) of a staff member. |
 | GET | `/api/patients` | Required | Retrieve list of all patients. |
 | POST | `/api/patients` | Required | Register a new patient. |
+| GET | `/api/patients/export/csv` | Admin Only | Export patient records to a CSV file. |
 | GET | `/api/tests` | Required | Retrieve test catalog. |
 | POST | `/api/tests` | Admin Only | Add a new test to the catalog. |
 | GET | `/api/bookings` | Required | Retrieve all bookings. |
 | POST | `/api/bookings` | Required | Create a new booking. |
 | PUT | `/api/bookings/:id/status`| Required | Update lifecycle status of a booking. |
+| GET | `/api/bookings/export/csv`| Admin Only | Export booking records to a CSV file. |
 | POST | `/api/reports` | Tech/Admin | Enter test results for a booking. |
 | GET | `/api/reports/:bookingId/pdf`| Required | Generate and stream PDF report. |
 | GET | `/api/settings` | Required | Fetch lab settings (name, logo, footer). |
+| GET | `/api/activity-logs` | Admin Only | Fetch system activity/audit logs. |
+| GET | `/api/analytics/revenue`| Admin Only | Aggregate booking data for revenue charts. |
 
 ---
 
@@ -303,6 +328,7 @@ MongoDB was chosen for its flexibility with document structures, allowing tests 
 | **Test** | Catalog of available diagnostics | `testCode`, `price`, `normalRange` | Referenced by Bookings & Reports. |
 | **Booking** | Transactional record of a visit | `bookingId`, `status`, `paymentStatus` | References `Patient`, array of `Test`, and `User` (creator). |
 | **Report** | Stores actual diagnostic results | `resultValue`, `isAbnormal`, `remarks` | References `Booking`, `Test`, and `User` (tech). |
+| **ActivityLog** | System audit trail | `action`, `description`, `targetType` | References `User`. |
 | **LabSettings** | Global configuration | `labName`, `logoUrl`, `address` | Singleton-style document. |
 
 ---

@@ -3,6 +3,7 @@ import Patient from '../models/Patient.js';
 import Test from '../models/Test.js';
 import Report from '../models/Report.js';
 import { generateInvoicePDF } from '../utils/pdfGenerator.js';
+import { logActivity } from '../utils/logActivity.js';
 
 export const createBooking = async (req, res) => {
   try {
@@ -46,6 +47,14 @@ export const createBooking = async (req, res) => {
 
     await newBooking.populate('patient', 'name');
     await newBooking.populate('tests', 'testName');
+
+    await logActivity(
+      req,
+      'CREATE_BOOKING',
+      `Created booking ${newBooking.bookingId || newBooking._id} for patient ${newBooking.patient.name}`,
+      'Booking',
+      newBooking._id
+    );
 
     res.status(201).json({
       success: true,
@@ -143,6 +152,14 @@ export const updateBookingStatus = async (req, res) => {
 
     await booking.save();
     
+    await logActivity(
+      req,
+      'UPDATE_BOOKING_STATUS',
+      `Updated booking ${booking.bookingId || booking._id} status to ${status}`,
+      'Booking',
+      booking._id
+    );
+
     res.status(200).json({
       success: true,
       message: 'Booking status updated successfully',
@@ -172,6 +189,14 @@ export const updatePaymentStatus = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Booking not found' });
     }
 
+    await logActivity(
+      req,
+      'UPDATE_PAYMENT_STATUS',
+      `Updated booking ${booking.bookingId || booking._id} payment status to ${paymentStatus}`,
+      'Booking',
+      booking._id
+    );
+
     res.status(200).json({
       success: true,
       message: 'Payment status updated successfully',
@@ -191,6 +216,14 @@ export const deleteBooking = async (req, res) => {
 
     await Report.deleteMany({ booking: booking._id });
     await booking.deleteOne();
+
+    await logActivity(
+      req,
+      'DELETE_BOOKING',
+      `Deleted booking ${booking.bookingId || booking._id}`,
+      'Booking',
+      booking._id
+    );
 
     res.status(200).json({
       success: true,

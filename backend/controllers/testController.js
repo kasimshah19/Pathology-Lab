@@ -1,4 +1,5 @@
 import Test from '../models/Test.js';
+import { logActivity } from '../utils/logActivity.js';
 
 // @desc    Create new test
 // @route   POST /api/tests
@@ -26,6 +27,14 @@ export const createTest = async (req, res) => {
       sampleType 
     });
     
+    await logActivity(
+      req,
+      'CREATE_TEST',
+      `Created test ${test.testName} (${test.testCode})`,
+      'Test',
+      test._id
+    );
+
     return res.status(201).json({ 
       success: true, 
       message: "Test created successfully", 
@@ -126,6 +135,14 @@ export const updateTest = async (req, res) => {
       });
     }
     
+    await logActivity(
+      req,
+      'UPDATE_TEST',
+      `Updated test ${test.testName} (${test.testCode})`,
+      'Test',
+      test._id
+    );
+
     return res.status(200).json({ 
       success: true, 
       message: "Test updated successfully", 
@@ -159,6 +176,14 @@ export const deleteTest = async (req, res) => {
       });
     }
     
+    await logActivity(
+      req,
+      'DEACTIVATE_TEST',
+      `Deactivated test ${test.testName} (${test.testCode})`,
+      'Test',
+      test._id
+    );
+
     return res.status(200).json({ 
       success: true, 
       message: "Test deactivated successfully" 

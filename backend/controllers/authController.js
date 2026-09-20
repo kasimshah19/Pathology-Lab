@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import { logActivity } from '../utils/logActivity.js';
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
@@ -98,6 +99,10 @@ export const loginUser = async (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: '7d', // Token valid for 7 days
     });
+    
+    // Temporarily attach user to req so logActivity can use it
+    req.user = user;
+    await logActivity(req, 'LOGIN', 'User logged in successfully');
 
     return res.status(200).json({
       success: true,
@@ -323,6 +328,8 @@ export const changeMyPassword = async (req, res) => {
     // Update user password
     user.password = hashedPassword;
     await user.save();
+
+    await logActivity(req, 'CHANGE_PASSWORD', 'User changed their password');
 
     return res.status(200).json({
       success: true,

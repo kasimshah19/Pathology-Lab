@@ -13,6 +13,7 @@ import {
   ClipboardList,
   FileText,
   Settings,
+  History,
   LogOut,
   ChevronDown,
   Menu,
@@ -31,6 +32,7 @@ const navItems = [
 ];
 
 const adminOnlyItems = [
+  { label: 'Activity Log', href: '/dashboard/activity-log', icon: History },
   { label: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];
 

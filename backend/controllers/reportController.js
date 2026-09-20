@@ -2,6 +2,7 @@ import Report from '../models/Report.js';
 import Booking from '../models/Booking.js';
 import Test from '../models/Test.js';
 import { generateReportPDF } from '../utils/pdfGenerator.js';
+import { logActivity } from '../utils/logActivity.js';
 
 export const addOrUpdateReportResults = async (req, res) => {
   try {
@@ -72,6 +73,14 @@ export const addOrUpdateReportResults = async (req, res) => {
     bookingDoc.status = 'result_entered';
     await bookingDoc.save();
 
+    await logActivity(
+      req,
+      'ENTER_RESULTS',
+      `Entered/Updated results for booking ${bookingDoc.bookingId || bookingDoc._id}`,
+      'Booking',
+      bookingDoc._id
+    );
+
     res.status(200).json({
       success: true,
       message: 'Report results saved successfully',
@@ -129,6 +138,14 @@ export const markReportAsReady = async (req, res) => {
 
     booking.status = 'report_ready';
     await booking.save();
+
+    await logActivity(
+      req,
+      'MARK_REPORT_READY',
+      `Marked report as ready for booking ${booking.bookingId || booking._id}`,
+      'Booking',
+      booking._id
+    );
 
     res.status(200).json({
       success: true,

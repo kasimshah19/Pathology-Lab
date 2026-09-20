@@ -1,4 +1,5 @@
 import Patient from '../models/Patient.js';
+import { logActivity } from '../utils/logActivity.js';
 
 // @desc    Create new patient
 // @route   POST /api/patients
@@ -17,6 +18,14 @@ export const createPatient = async (req, res) => {
       address
     });
     
+    await logActivity(
+      req,
+      'CREATE_PATIENT',
+      `Created patient ${patient.name} (${patient.patientId || 'New'})`,
+      'Patient',
+      patient._id
+    );
+
     return res.status(201).json({
       success: true,
       message: "Patient created successfully",
@@ -123,6 +132,14 @@ export const updatePatient = async (req, res) => {
       });
     }
     
+    await logActivity(
+      req,
+      'UPDATE_PATIENT',
+      `Updated patient ${patient.name} (${patient.patientId || 'Unknown'})`,
+      'Patient',
+      patient._id
+    );
+
     return res.status(200).json({ 
       success: true, 
       message: "Patient updated successfully", 
@@ -151,6 +168,14 @@ export const deletePatient = async (req, res) => {
       });
     }
     
+    await logActivity(
+      req,
+      'DELETE_PATIENT',
+      `Deleted patient ${patient.name} (${patient.patientId || 'Unknown'})`,
+      'Patient',
+      patient._id
+    );
+
     return res.status(200).json({ 
       success: true, 
       message: "Patient deleted successfully" 

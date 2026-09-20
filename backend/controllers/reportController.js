@@ -88,7 +88,7 @@ export const addOrUpdateReportResults = async (req, res) => {
       data: savedReports
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
 
@@ -104,7 +104,7 @@ export const getReportsByBooking = async (req, res) => {
       data: reports
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
 
@@ -164,7 +164,7 @@ export const markReportAsReady = async (req, res) => {
       data: booking
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
 
@@ -198,6 +198,6 @@ export const generatePatientReport = async (req, res) => {
 
     res.send(pdfBuffer);
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };

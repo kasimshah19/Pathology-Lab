@@ -97,7 +97,7 @@ export const createBooking = async (req, res) => {
       data: newBooking
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
 
@@ -142,7 +142,7 @@ export const getAllBookings = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
 
@@ -162,7 +162,7 @@ export const getBookingById = async (req, res) => {
       data: booking
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
 
@@ -201,7 +201,7 @@ export const updateBookingStatus = async (req, res) => {
       data: booking
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
 
@@ -238,7 +238,7 @@ export const updatePaymentStatus = async (req, res) => {
       data: booking
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
 
@@ -265,7 +265,7 @@ export const deleteBooking = async (req, res) => {
       message: 'Booking and associated reports deleted successfully'
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
 
@@ -285,7 +285,7 @@ export const generateInvoice = async (req, res) => {
     res.setHeader('Content-Disposition', `attachment; filename=Invoice_${booking.bookingId || booking._id}.pdf`);
     res.send(pdfBuffer);
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };
 
@@ -346,6 +346,6 @@ export const exportBookingsCSV = async (req, res) => {
       null
     );
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Server Error' });
   }
 };

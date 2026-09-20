@@ -44,7 +44,7 @@ export const createTest = async (req, res) => {
     console.error("Create Test Error:", error);
     return res.status(500).json({ 
       success: false, 
-      message: error.message || "Server error while creating test" 
+      message: "Server error" 
     });
   }
 };
@@ -152,7 +152,7 @@ export const updateTest = async (req, res) => {
     console.error("Update Test Error:", error);
     return res.status(500).json({ 
       success: false, 
-      message: error.message || "Server error while updating test" 
+      message: "Server error" 
     });
   }
 };

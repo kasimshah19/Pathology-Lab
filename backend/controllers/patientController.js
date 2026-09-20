@@ -37,7 +37,7 @@ export const createPatient = async (req, res) => {
     console.error("Create Patient Error:", error);
     return res.status(500).json({ 
       success: false, 
-      message: error.message || "Server error while creating patient" 
+      message: "Server error" 
     });
   }
 };
@@ -151,7 +151,7 @@ export const updatePatient = async (req, res) => {
     console.error("Update Patient Error:", error);
     return res.status(500).json({ 
       success: false, 
-      message: error.message || "Server error while updating patient" 
+      message: "Server error" 
     });
   }
 };
@@ -282,6 +282,6 @@ export const uploadPatientPhoto = async (req, res) => {
     });
   } catch (error) {
     console.error('Upload Photo Error:', error);
-    return res.status(500).json({ success: false, message: error.message || 'Error uploading photo' });
+    return res.status(500).json({ success: false, message: 'Error uploading photo' });
   }
 };

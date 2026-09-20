@@ -40,6 +40,7 @@ export const sendEmail = async (to, subject, htmlContent) => {
 
 /**
  * Generates the HTML for a booking confirmation email.
+ * Format: Booking Confirmation - [Booking ID]
  */
 export const getBookingConfirmationEmail = (patientName, bookingId, testsListString, totalAmount) => {
   return `

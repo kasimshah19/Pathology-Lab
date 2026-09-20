@@ -4,6 +4,8 @@
 
 A comprehensive, full-stack, and PWA-enabled pathology laboratory management platform designed to digitize patient records, streamline test bookings, track sample lifecycles, and generate professional diagnostic reports.
 
+> 📝 **Detailed Project Reference:** Check out the [**Comprehensive Project Details Document**](./PROJECT_DETAILS.md) for an in-depth look at features, architecture, setup instructions, and screenshots designed for your portfolio showcase.
+
 <br />
 
 

@@ -212,10 +212,10 @@ export const exportPatientsCSV = async (req, res) => {
       'Name': p.name,
       'Age': p.age,
       'Gender': p.gender,
-      'Phone': p.phone || '',
+      'Phone': p.phone ? `="${p.phone}"` : '',
       'Email': p.email || '',
       'Address': p.address || '',
-      'Registered On': new Date(p.createdAt).toISOString()
+      'Registered On': new Date(p.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
     }));
 
     if (csvData.length === 0) {

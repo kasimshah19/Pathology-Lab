@@ -282,13 +282,13 @@ export const exportBookingsCSV = async (req, res) => {
       'Booking ID': b.bookingId,
       'Patient Name': b.patient?.name || 'N/A',
       'Patient ID': b.patient?.patientId || 'N/A',
-      'Phone': b.patient?.phone || 'N/A',
+      'Phone': b.patient?.phone ? `="${b.patient.phone}"` : 'N/A',
       'Tests': b.tests?.map(t => t.testName).join(', ') || '',
       'Total Amount': b.totalAmount,
       'Status': b.status,
       'Payment Status': b.paymentStatus,
       'Referred By': b.referredBy || '',
-      'Date Created': new Date(b.createdAt).toISOString()
+      'Date Created': new Date(b.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
     }));
 
     if (csvData.length === 0) {

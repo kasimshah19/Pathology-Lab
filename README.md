@@ -11,6 +11,11 @@ A comprehensive, full-stack, and PWA-enabled pathology laboratory management pla
 
 ![Build](https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge)
 ![Version](https://img.shields.io/badge/Version-1.0.0-blue?style=for-the-badge)
+![GitHub License](https://img.shields.io/github/license/kasimshah19/Pathology-Lab?style=for-the-badge)
+![GitHub Repo stars](https://img.shields.io/github/stars/kasimshah19/Pathology-Lab?style=for-the-badge)
+![GitHub forks](https://img.shields.io/github/forks/kasimshah19/Pathology-Lab?style=for-the-badge)
+![GitHub issues](https://img.shields.io/github/issues/kasimshah19/Pathology-Lab?style=for-the-badge)
+![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge)
 ![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)

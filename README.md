@@ -369,13 +369,18 @@ MongoDB was chosen for its flexibility with document structures, allowing tests 
 
 ---
 
-## Security Considerations
+## Security Considerations & Production Hardening
 
-- **Password Hashing:** Passwords are never stored in plain text. `bcryptjs` hashes them before saving to MongoDB.
-- **Stateless Auth:** JWT ensures the server doesn't need to maintain session state, reducing memory overhead and mitigating session hijacking.
-- **CORS:** Cross-Origin Resource Sharing is enabled on the backend to accept requests from the frontend domain.
-- **Injection Protection:** Mongoose inherently sanitizes inputs by strictly enforcing schema types, preventing NoSQL injection attacks.
-- **Environment Variable Security:** Secrets (like JWT_SECRET and MongoDB URI) are stored in environment variables and are NEVER committed to version control. The repository uses `.env.example` to show required keys without exposing values.
+- **Helmet Security Headers:** `helmet` middleware is implemented to automatically set crucial HTTP headers protecting against cross-site scripting (XSS), clickjacking, and other common vulnerabilities.
+- **Rate Limiting:**
+  - **Global Limit:** All `/api/` routes are protected by a general rate limiter (`express-rate-limit`) capped at 100 requests per 15 minutes per IP to prevent DoS attacks.
+  - **Login Protection:** A strict limit of 5 attempts per 15 minutes is stacked specifically on the `/api/auth/login` endpoint to thwart brute-force password guessing.
+- **CORS Configuration:** Strictly limited to the frontend production domain and localhost. It dynamically reads the allowed origin from the `FRONTEND_URL` environment variable, ensuring the API cannot be consumed by arbitrary third-party domains.
+- **NoSQL Injection Protection:** Both Mongoose strict schemas and `express-mongo-sanitize` are used globally to strip dangerous operators (like `$` or `.`) from request bodies and query parameters.
+- **Payload Limits:** `express.json` is configured with a strict `10mb` body size limit to prevent payload-based denial of service.
+- **Error Scrubbing:** 500-level error messages in production return generic `"Server Error"` strings to the client to avoid leaking sensitive stack traces, DB connection strings, or variables, while full details are logged server-side.
+- **Password Hashing & Stateless Auth:** `bcryptjs` hashes passwords and JWT manages sessions, preventing stateful hijacking.
+- **Environment Variable Security:** Secrets are stored securely in environment variables (and Render's Vault), using `.env.example` as a template for developers without exposing credentials in version control.
 
 ---
 
@@ -520,7 +525,6 @@ Automated tests (Unit, Integration, E2E) are currently not present in the reposi
 ## Future Improvements
 
 ### Short Term
-- Add `express-rate-limit` to authentication routes.
 - Implement pagination on the patients and bookings data tables to handle large datasets.
 - Implement barcode generation for sample tubes based on `bookingId`.
 
@@ -548,9 +552,9 @@ Automated tests (Unit, Integration, E2E) are currently not present in the reposi
 
 | Area | Status | Notes |
 |------|--------|-------|
-| Authentication | Implemented | JWT is secure; needs rate limiting for brute-force protection. |
+| Authentication | Implemented | JWT is secure; brute-force protection (rate-limiting) is active. |
 | Database | Implemented | MongoDB connected; ensure IP whitelisting in Atlas. |
-| Security | Partial | CORS and Auth are good; needs helmet.js and rate limiting. |
+| Security | Ready | Helmet, strict CORS, express-mongo-sanitize, and rate-limiting are fully active. |
 | Deployment | Implemented | Vercel and Render connected via CI. |
 | Error Handling | Implemented | Toast notifications and API error wrappers are active. |
 | Testing | Partial | Jest and Supertest suites are passing. |

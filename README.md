@@ -503,14 +503,21 @@ The repository includes a `render.yaml` file for Infrastructure as Code (IaC) de
 - **Separation of Concerns:** Backend separates Routes, Controllers, and Models. PDF generation logic is isolated in a `utils` folder.
 - **Linting:** ESLint is configured in the Next.js frontend to enforce code standards.
 
-**Testing:**
-Automated tests (Unit, Integration, E2E) are currently not present in the repository. 
+**Testing Framework:**
+A robust automated testing suite is implemented for the backend using **Jest**, **Supertest**, and **MongoMemoryServer**.
 
-*Recommended Testing Strategy:*
-- Implement Jest for backend controller unit testing.
-- Use Supertest for API endpoint integration tests.
-- Use Cypress or Playwright for frontend E2E flows (Testing the booking lifecycle).
-- **Note:** The backend has partial test coverage using Jest & Supertest.
+- **In-Memory Database**: Tests run against a fast, isolated in-memory MongoDB instance ensuring real database data is never polluted.
+- **Integration Tests**: Supertest is used to validate full REST API endpoints.
+- **Coverage Focus**: Critical business paths are heavily tested:
+  - **Auth Flow**: Registration, Login, Token generation, and Profile fetching.
+  - **Patient Flow**: Secure patient creation, RBAC deletion checks (Admin vs Receptionist), and ID generation.
+  - **Booking Flow**: Total amount calculation, booking status transitions, and data integrity checks.
+
+*To run the test suite locally:*
+```bash
+cd backend
+npm test
+```
 
 ---
 
@@ -557,7 +564,7 @@ Automated tests (Unit, Integration, E2E) are currently not present in the reposi
 | Security | Ready | Helmet, strict CORS, express-mongo-sanitize, and rate-limiting are fully active. |
 | Deployment | Implemented | Vercel and Render connected via CI. |
 | Error Handling | Implemented | Toast notifications and API error wrappers are active. |
-| Testing | Partial | Jest and Supertest suites are passing. |
+| Testing | Implemented | Comprehensive Jest and Supertest suites covering critical paths (Auth, Patients, Bookings) are passing. |
 | Performance | Implemented | Next.js and PWA caching ensure fast delivery. |
 | Monitoring | Not Present | Needs integration with Sentry or Datadog for error tracking. |
 

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import api from '@/lib/axios';
+import api from '@/lib/api';
 import { format } from 'date-fns';
 import { 
   History, 

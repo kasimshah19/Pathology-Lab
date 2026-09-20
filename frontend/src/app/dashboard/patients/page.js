@@ -291,12 +291,23 @@ export default function PatientsPage() {
                       </button>
                     </td>
                     <td className="px-4 py-3.5">
-                      <button
-                        onClick={() => router.push(`/dashboard/patients/${p._id}`)}
-                        className="text-slate-800 font-medium hover:text-teal-600 transition-colors text-left"
-                      >
-                        {p.name}
-                      </button>
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0">
+                          {p.photoUrl ? (
+                            <img src={p.photoUrl} alt={p.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-xs font-medium text-slate-500">
+                              {p.name.charAt(0).toUpperCase()}
+                            </span>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => router.push(`/dashboard/patients/${p._id}`)}
+                          className="text-slate-800 font-medium hover:text-teal-600 transition-colors text-left"
+                        >
+                          {p.name}
+                        </button>
+                      </div>
                     </td>
                     <td className="px-4 py-3.5 text-slate-500 hidden sm:table-cell">{p.age}</td>
                     <td className="px-4 py-3.5 text-slate-500 capitalize hidden sm:table-cell">{p.gender}</td>

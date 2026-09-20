@@ -10,11 +10,12 @@ import {
   exportBookingsCSV
 } from '../controllers/bookingController.js';
 import { protect, authorizeRoles } from '../middleware/authMiddleware.js';
+import upload from '../middleware/uploadMiddleware.js';
 
 const router = express.Router();
 
 router.route('/')
-  .post(protect, createBooking)
+  .post(protect, upload.single('prescription'), createBooking)
   .get(protect, getAllBookings);
 
 router.get('/export/csv', protect, authorizeRoles('admin'), exportBookingsCSV);

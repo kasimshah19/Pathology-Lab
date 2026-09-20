@@ -174,8 +174,12 @@ export default function PatientDetailPage() {
         </button>
 
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center text-white text-xl font-bold shadow-md shadow-teal-200/30">
-            {patient.name?.charAt(0)?.toUpperCase()}
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center text-white text-xl font-bold shadow-md shadow-teal-200/30 overflow-hidden">
+            {patient.photoUrl ? (
+              <img src={patient.photoUrl} alt={patient.name} className="w-full h-full object-cover" />
+            ) : (
+              patient.name?.charAt(0)?.toUpperCase()
+            )}
           </div>
           <div>
             <h2 className="text-xl font-bold text-slate-800">{patient.name}</h2>

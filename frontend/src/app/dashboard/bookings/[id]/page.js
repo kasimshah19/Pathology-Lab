@@ -336,6 +336,19 @@ export default function BookingDetailPage() {
             </div>
           </div>
         )}
+        {booking.prescriptionUrl && (
+          <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50/70 mt-4">
+            <div className="w-9 h-9 rounded-lg bg-white border border-slate-100 flex items-center justify-center shrink-0">
+              <FileText className="w-4 h-4 text-slate-300" />
+            </div>
+            <div>
+              <p className="text-xs text-slate-400 font-medium">Prescription</p>
+              <a href={booking.prescriptionUrl} target="_blank" rel="noopener noreferrer" className="text-sm text-teal-600 hover:text-teal-700 font-medium hover:underline">
+                View Document
+              </a>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Tests table */}

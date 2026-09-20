@@ -6,10 +6,20 @@ import { generateInvoicePDF } from '../utils/pdfGenerator.js';
 import { logActivity } from '../utils/logActivity.js';
 import { Parser } from 'json2csv';
 import { sendEmail, getBookingConfirmationEmail } from '../utils/emailService.js';
+import { uploadToCloudinary } from '../utils/cloudinaryUpload.js';
 
 export const createBooking = async (req, res) => {
   try {
-    const { patient, tests, referredBy } = req.body;
+    let { patient, tests, referredBy } = req.body;
+
+    // Handle formData parsing for tests if they come as string
+    if (typeof tests === 'string') {
+      try {
+        tests = JSON.parse(tests);
+      } catch (e) {
+        return res.status(400).json({ success: false, message: 'Invalid tests format' });
+      }
+    }
 
     // Validate patient exists
     const existingPatient = await Patient.findById(patient);
@@ -44,6 +54,16 @@ export const createBooking = async (req, res) => {
       status: 'pending',
       paymentStatus: 'unpaid'
     });
+
+    if (req.file) {
+      try {
+        const prescriptionUrl = await uploadToCloudinary(req.file.buffer, 'pathology-lab/prescriptions');
+        newBooking.prescriptionUrl = prescriptionUrl;
+      } catch (uploadError) {
+        console.error('Prescription upload failed:', uploadError);
+        return res.status(500).json({ success: false, message: 'Failed to upload prescription' });
+      }
+    }
 
     await newBooking.save();
 

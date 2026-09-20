@@ -24,6 +24,10 @@ const patientSchema = new mongoose.Schema(
     address: {
       type: String,
     },
+    photoUrl: {
+      type: String,
+      description: 'Cloudinary URL for the patient profile photo',
+    },
     patientId: {
       type: String,
       unique: true,

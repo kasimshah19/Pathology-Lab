@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Loader2, AlertCircle } from 'lucide-react';
+import { X, Loader2, AlertCircle, Camera } from 'lucide-react';
 import api from '@/lib/api';
 
 const initialForm = { name: '', age: '', gender: '', phone: '', email: '', address: '' };
@@ -11,6 +11,8 @@ export default function PatientFormModal({ open, onClose, onSuccess, existingPat
   const [errors, setErrors] = useState({});
   const [apiError, setApiError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [photoUploading, setPhotoUploading] = useState(false);
+  const [photoError, setPhotoError] = useState('');
   const isEdit = !!existingPatient;
 
   // Populate form when editing
@@ -82,6 +84,32 @@ export default function PatientFormModal({ open, onClose, onSuccess, existingPat
     }
   };
 
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setPhotoUploading(true);
+    setPhotoError('');
+    try {
+      const formData = new FormData();
+      formData.append('photo', file);
+      
+      const res = await api.post(`/patients/${existingPatient._id}/photo`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      
+      if (res.data && res.data.data && res.data.data.photoUrl) {
+        existingPatient.photoUrl = res.data.data.photoUrl; 
+        onSuccess?.('Photo uploaded successfully');
+      }
+    } catch (err) {
+      setPhotoError(err.response?.data?.message || 'Failed to upload photo');
+    } finally {
+      setPhotoUploading(false);
+      e.target.value = ''; 
+    }
+  };
+
   const fieldClass = (field) =>
     `w-full px-3.5 py-2.5 bg-slate-50/80 border rounded-xl text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400 transition-all duration-200 ${errors[field] ? 'border-red-300 focus:ring-red-200 focus:border-red-400' : 'border-slate-200'}`;
 
@@ -108,6 +136,27 @@ export default function PatientFormModal({ open, onClose, onSuccess, existingPat
             <div className="flex items-start gap-3 bg-red-50 border border-red-100 text-red-600 text-sm px-4 py-3 rounded-xl">
               <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
               <span>{apiError}</span>
+            </div>
+          )}
+
+          {isEdit && (
+            <div className="flex flex-col items-center mb-6">
+              <div className="relative group">
+                <div className="w-24 h-24 rounded-full border-4 border-slate-50 bg-slate-100 flex items-center justify-center overflow-hidden shadow-sm">
+                  {existingPatient?.photoUrl ? (
+                    <img src={existingPatient.photoUrl} alt="Patient" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-3xl text-slate-400 font-medium">
+                      {form.name ? form.name.charAt(0).toUpperCase() : '?'}
+                    </span>
+                  )}
+                </div>
+                <label className="absolute bottom-0 right-0 p-2 bg-teal-500 hover:bg-teal-600 text-white rounded-full cursor-pointer shadow-md transition-colors group-hover:scale-105">
+                  {photoUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Camera className="w-4 h-4" />}
+                  <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handlePhotoUpload} disabled={photoUploading} />
+                </label>
+              </div>
+              {photoError && <p className="text-xs text-red-500 mt-2">{photoError}</p>}
             </div>
           )}
 

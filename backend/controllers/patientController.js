@@ -1,6 +1,7 @@
 import Patient from '../models/Patient.js';
 import { logActivity } from '../utils/logActivity.js';
 import { Parser } from 'json2csv';
+import { uploadToCloudinary } from '../utils/cloudinaryUpload.js';
 
 // @desc    Create new patient
 // @route   POST /api/patients
@@ -244,5 +245,43 @@ export const exportPatientsCSV = async (req, res) => {
       success: false, 
       message: "Server error while exporting patients" 
     });
+  }
+};
+
+// @desc    Upload patient profile photo
+// @route   POST /api/patients/:id/photo
+// @access  Private
+export const uploadPatientPhoto = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No file uploaded' });
+    }
+
+    const patient = await Patient.findById(req.params.id);
+    if (!patient) {
+      return res.status(404).json({ success: false, message: 'Patient not found' });
+    }
+
+    const photoUrl = await uploadToCloudinary(req.file.buffer, 'pathology-lab/patient-photos');
+    
+    patient.photoUrl = photoUrl;
+    await patient.save();
+
+    await logActivity(
+      req,
+      'UPDATE_PATIENT',
+      `Uploaded profile photo for patient ${patient.name}`,
+      'Patient',
+      patient._id
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: 'Photo uploaded successfully',
+      data: patient
+    });
+  } catch (error) {
+    console.error('Upload Photo Error:', error);
+    return res.status(500).json({ success: false, message: error.message || 'Error uploading photo' });
   }
 };

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { X, Loader2, AlertCircle, Search, Plus, User, ChevronRight, Trash2 } from 'lucide-react';
+import { X, Loader2, AlertCircle, Search, Plus, User, ChevronRight, Trash2, Upload } from 'lucide-react';
 import api from '@/lib/api';
 import PatientFormModal from '@/components/PatientFormModal';
 
@@ -26,6 +26,7 @@ export default function NewBookingModal({ open, onClose, onSuccess }) {
 
   // Other
   const [referredBy, setReferredBy] = useState('');
+  const [prescription, setPrescription] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [apiError, setApiError] = useState('');
 
@@ -43,6 +44,7 @@ export default function NewBookingModal({ open, onClose, onSuccess }) {
       setTestResults([]);
       setSelectedTests([]);
       setReferredBy('');
+      setPrescription(null);
       setApiError('');
     }
   }, [open]);
@@ -111,11 +113,23 @@ export default function NewBookingModal({ open, onClose, onSuccess }) {
     setSubmitting(true);
     setApiError('');
     try {
-      await api.post('/bookings', {
-        patient: selectedPatient._id,
-        tests: selectedTests.map((t) => t._id),
-        referredBy: referredBy.trim() || undefined,
-      });
+      if (prescription) {
+        const formData = new FormData();
+        formData.append('patient', selectedPatient._id);
+        formData.append('tests', JSON.stringify(selectedTests.map((t) => t._id)));
+        if (referredBy.trim()) formData.append('referredBy', referredBy.trim());
+        formData.append('prescription', prescription);
+
+        await api.post('/bookings', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+      } else {
+        await api.post('/bookings', {
+          patient: selectedPatient._id,
+          tests: selectedTests.map((t) => t._id),
+          referredBy: referredBy.trim() || undefined,
+        });
+      }
       onSuccess?.('Booking created successfully');
       onClose();
     } catch (err) {
@@ -353,6 +367,26 @@ export default function NewBookingModal({ open, onClose, onSuccess }) {
                     placeholder="Doctor name or hospital"
                     className="w-full px-3.5 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400 transition-all"
                   />
+                </div>
+
+                {/* Prescription Upload */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-600 mb-1.5">Prescription (optional)</label>
+                  <label className="flex items-center gap-3 w-full px-3.5 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-sm text-slate-600 cursor-pointer hover:bg-slate-100 transition-colors">
+                    <Upload className="w-4 h-4 text-slate-400" />
+                    <span className="flex-1 truncate">{prescription ? prescription.name : 'Upload image or PDF'}</span>
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,application/pdf"
+                      className="hidden"
+                      onChange={(e) => setPrescription(e.target.files?.[0] || null)}
+                    />
+                  </label>
+                  {prescription && (
+                    <button onClick={() => setPrescription(null)} className="text-xs text-red-500 mt-1 hover:underline">
+                      Remove file
+                    </button>
+                  )}
                 </div>
 
                 {/* Actions */}

@@ -48,6 +48,10 @@ const bookingSchema = new mongoose.Schema(
       ref: 'User',
       description: 'Reference to the staff member (receptionist/admin) who created this booking',
     },
+    prescriptionUrl: {
+      type: String,
+      description: 'Cloudinary URL for the attached prescription or referral document',
+    },
   },
   {
     timestamps: true, // Automatically adds createdAt and updatedAt fields

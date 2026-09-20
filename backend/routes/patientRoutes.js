@@ -5,9 +5,11 @@ import {
   getPatientById, 
   updatePatient, 
   deletePatient,
-  exportPatientsCSV
+  exportPatientsCSV,
+  uploadPatientPhoto
 } from '../controllers/patientController.js';
 import { protect, authorizeRoles } from '../middleware/authMiddleware.js';
+import upload from '../middleware/uploadMiddleware.js';
 
 const router = express.Router();
 
@@ -21,5 +23,7 @@ router.route('/:id')
   .get(protect, getPatientById)
   .put(protect, updatePatient)
   .delete(protect, authorizeRoles('admin'), deletePatient);
+
+router.post('/:id/photo', protect, upload.single('photo'), uploadPatientPhoto);
 
 export default router;

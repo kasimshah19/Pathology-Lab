@@ -10,7 +10,7 @@ export const createTestUser = async (role = 'admin') => {
     role
   });
 
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'testsecret', {
+  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET || 'testsecret', {
     expiresIn: '1h'
   });
 

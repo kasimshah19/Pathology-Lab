@@ -44,8 +44,8 @@ describe('Activity Logs API', () => {
     
     expect(res.statusCode).toEqual(200);
     expect(res.body.success).toBe(true);
-    expect(res.body.data.length).toBe(1);
-    expect(res.body.data[0].action).toBe('TEST_ACTION');
+    expect(res.body.data.logs.length).toBe(1);
+    expect(res.body.data.logs[0].action).toBe('TEST_ACTION');
   });
 
   it('should deny non-admins from fetching activity logs', async () => {
@@ -56,6 +56,6 @@ describe('Activity Logs API', () => {
       .set('Authorization', `Bearer ${token}`);
     
     expect(res.statusCode).toEqual(403);
-    expect(res.body.message).toMatch(/Not authorized/i);
+    expect(res.body.message).toMatch(/Access denied/i);
   });
 });

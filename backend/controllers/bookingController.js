@@ -47,7 +47,7 @@ export const createBooking = async (req, res) => {
 
     await newBooking.save();
 
-    await newBooking.populate('patient', 'name');
+    await newBooking.populate('patient', 'name email');
     await newBooking.populate('tests', 'testName');
 
     await logActivity(

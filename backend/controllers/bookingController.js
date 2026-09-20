@@ -5,6 +5,7 @@ import Report from '../models/Report.js';
 import { generateInvoicePDF } from '../utils/pdfGenerator.js';
 import { logActivity } from '../utils/logActivity.js';
 import { Parser } from 'json2csv';
+import { sendEmail, getBookingConfirmationEmail } from '../utils/emailService.js';
 
 export const createBooking = async (req, res) => {
   try {
@@ -56,6 +57,19 @@ export const createBooking = async (req, res) => {
       'Booking',
       newBooking._id
     );
+
+    // Send email notification asynchronously
+    if (newBooking.patient.email) {
+      const testsListString = newBooking.tests.map(t => t.testName).join(', ');
+      const htmlContent = getBookingConfirmationEmail(
+        newBooking.patient.name,
+        newBooking.bookingId || newBooking._id,
+        testsListString,
+        totalAmount
+      );
+      sendEmail(newBooking.patient.email, `Booking Confirmation - ${newBooking.bookingId || newBooking._id}`, htmlContent)
+        .catch(err => console.error('Failed to send booking email async:', err));
+    }
 
     res.status(201).json({
       success: true,

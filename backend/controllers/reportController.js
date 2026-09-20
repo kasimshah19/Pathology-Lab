@@ -3,6 +3,7 @@ import Booking from '../models/Booking.js';
 import Test from '../models/Test.js';
 import { generateReportPDF } from '../utils/pdfGenerator.js';
 import { logActivity } from '../utils/logActivity.js';
+import { sendEmail, getReportReadyEmail } from '../utils/emailService.js';
 
 export const addOrUpdateReportResults = async (req, res) => {
   try {
@@ -111,7 +112,7 @@ export const markReportAsReady = async (req, res) => {
   try {
     const { bookingId } = req.params;
 
-    const booking = await Booking.findById(bookingId);
+    const booking = await Booking.findById(bookingId).populate('patient', 'name email');
     if (!booking) {
       return res.status(404).json({ success: false, message: 'Booking not found' });
     }
@@ -146,6 +147,16 @@ export const markReportAsReady = async (req, res) => {
       'Booking',
       booking._id
     );
+
+    // Send email notification asynchronously
+    if (booking.patient && booking.patient.email) {
+      const htmlContent = getReportReadyEmail(
+        booking.patient.name,
+        booking.bookingId || booking._id
+      );
+      sendEmail(booking.patient.email, `Your Lab Report is Ready - ${booking.bookingId || booking._id}`, htmlContent)
+        .catch(err => console.error('Failed to send report ready email async:', err));
+    }
 
     res.status(200).json({
       success: true,

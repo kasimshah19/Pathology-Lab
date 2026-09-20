@@ -608,7 +608,7 @@ We welcome contributions to improve the Pathology Lab Management System.
 
 ## License
 
-No open-source license is currently specified in the repository. All rights reserved by the original author.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 

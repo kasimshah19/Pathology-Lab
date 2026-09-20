@@ -259,7 +259,7 @@ export default function TestsPage() {
                 <div className="flex items-start justify-between gap-2 mb-1">
                   <h3 className="text-sm font-semibold text-slate-800 leading-snug">{test.testName}</h3>
                   {isAdmin && (
-                    <div className="flex items-center gap-0.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center gap-0.5 shrink-0 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                       <button
                         onClick={() => handleEditClick(test)}
                         className="p-1.5 rounded-lg text-slate-400 hover:text-teal-600 hover:bg-teal-50 transition-all"

@@ -136,7 +136,7 @@ export default function ReportsPage() {
   };
 
   const SortIcon = ({ field }) => {
-    if (sortField !== field) return <span className="text-slate-300 opacity-0 group-hover:opacity-100 ml-1">↕</span>;
+    if (sortField !== field) return <span className="text-slate-300 lg:opacity-0 lg:group-hover:opacity-100 ml-1">↕</span>;
     return <span className="text-teal-500 ml-1">{sortOrder === 'asc' ? '↑' : '↓'}</span>;
   };
 

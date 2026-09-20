@@ -176,7 +176,7 @@ export default function PatientsPage() {
   };
 
   const SortIcon = ({ field }) => {
-    if (sortField !== field) return <span className="text-slate-300 opacity-0 group-hover:opacity-100 ml-1">↕</span>;
+    if (sortField !== field) return <span className="text-slate-300 lg:opacity-0 lg:group-hover:opacity-100 ml-1">↕</span>;
     return <span className="text-teal-500 ml-1">{sortOrder === 'asc' ? '↑' : '↓'}</span>;
   };
 
@@ -308,7 +308,7 @@ export default function PatientsPage() {
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => handleEditClick(p)}
-                          className="p-2 rounded-lg text-slate-400 hover:text-teal-600 hover:bg-teal-50 transition-all opacity-0 group-hover:opacity-100"
+                          className="p-2 rounded-lg text-slate-400 hover:text-teal-600 hover:bg-teal-50 transition-all lg:opacity-0 lg:group-hover:opacity-100"
                           title="Edit patient"
                         >
                           <Pencil className="w-4 h-4" />
@@ -316,7 +316,7 @@ export default function PatientsPage() {
                         {user?.role === 'admin' && (
                           <button
                             onClick={() => handleDeleteClick(p._id)}
-                            className="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+                            className="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all lg:opacity-0 lg:group-hover:opacity-100"
                             title="Delete patient"
                           >
                             <Trash2 className="w-4 h-4" />

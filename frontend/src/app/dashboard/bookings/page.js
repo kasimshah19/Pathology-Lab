@@ -304,7 +304,7 @@ export default function BookingsPage() {
   };
 
   const SortIcon = ({ field }) => {
-    if (sortField !== field) return <span className="text-slate-300 opacity-0 group-hover:opacity-100 ml-1">↕</span>;
+    if (sortField !== field) return <span className="text-slate-300 lg:opacity-0 lg:group-hover:opacity-100 ml-1">↕</span>;
     return <span className="text-teal-500 ml-1">{sortOrder === 'asc' ? '↑' : '↓'}</span>;
   };
 
@@ -487,7 +487,7 @@ export default function BookingsPage() {
                         <div className="flex items-center justify-end gap-1">
                           <button
                             onClick={() => router.push(`/dashboard/bookings/${b._id}`)}
-                            className="p-2 rounded-lg text-slate-400 hover:text-teal-600 hover:bg-teal-50 transition-all opacity-0 group-hover:opacity-100"
+                            className="p-2 rounded-lg text-slate-400 hover:text-teal-600 hover:bg-teal-50 transition-all lg:opacity-0 lg:group-hover:opacity-100"
                             title="View Details"
                           >
                             <Eye className="w-4 h-4" />
@@ -495,7 +495,7 @@ export default function BookingsPage() {
                           {isAdmin && (
                             <button
                               onClick={() => { setDeletingId(b._id); setConfirmOpen(true); }}
-                              className="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+                              className="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all lg:opacity-0 lg:group-hover:opacity-100"
                               title="Delete"
                             >
                               <Trash2 className="w-4 h-4" />

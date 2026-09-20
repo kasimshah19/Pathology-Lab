@@ -307,7 +307,7 @@ To help understand the system design, check out these architectural diagrams:
 
 ### Interactive Swagger UI
 The project includes a built-in, interactive API documentation interface powered by **Swagger (OpenAPI 3.0)**.
-- **Live Endpoint:** `GET /api-docs` (Available locally at `http://localhost:5000/api-docs` or on the deployed Render URL).
+- **Live Endpoint:** `GET /api-docs` (Available locally at [http://localhost:5000/api-docs/#/](http://localhost:5000/api-docs/#/) or on the deployed Render URL).
 - **Features:** 
   - Visualize all available API endpoints, request body schemas, and expected responses.
   - Fully testable: Use the **Authorize** button to inject your JWT token, then click **Try it out** to execute live API calls directly from your browser (no Postman required).

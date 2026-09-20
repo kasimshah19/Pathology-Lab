@@ -281,12 +281,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 Author
 
-**[Your Name]**
+**Kasim Shah**
 
-- 📧 Email: your.email@example.com
-- 🌐 Portfolio: [yourportfolio.com](https://yourportfolio.com)
-- 🐙 GitHub: [@yourusername](https://github.com/yourusername)
-- 💼 LinkedIn: [Your Name](https://linkedin.com/in/yourusername)
+- 📧 Email: [kasimshah998@gmail.com](mailto:kasimshah998@gmail.com)
+- 🌐 Portfolio: [kasim-portfolio-umber.vercel.app](https://kasim-portfolio-umber.vercel.app/)
+- 🐙 GitHub: [@kasimshah19](https://github.com/kasimshah19)
+- 💼 LinkedIn: [Kasim Shah](https://www.linkedin.com/in/kasim-shah-176175340/)
 
 ---
 *If you like this project, please consider giving it a ⭐ on GitHub!*
